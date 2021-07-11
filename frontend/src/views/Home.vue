@@ -1,5 +1,7 @@
 <template>
-  <div :class="this.backconststyle" style="minHeight: calc(100vh)">
+  <div class="home1" style="minHeight: calc(100vh)">
+    <video loop autoplay muted style="width:100%;" ref="video" :src="this.videoname">
+    </video>
     <div class="loginbutton">
       <div id="div2"><a href="https://movie.douban.com/" style="color: white">Movie</a></div>
       <div id="div3"><a href="https://map.baidu.com/" style="color: white">Location</a></div>
@@ -10,12 +12,12 @@
     
     <div class="search">
       <div class="searchtext">
-      <a-icon type="instagram"/>Search</div>
+      <a-icon :type="this.buttontype" @click="stopvideo"/>Search</div>
       <a-input-search class="input-box" placeholder="Please Input Search Text" style="width: 400px" @search="onSearch" size="large"/>
     </div>
     
   <div class="nextbutton">
-    <img src="../assets/right.png" width="40" height="40" alt="button" @click="Getbackstyle"/>
+    <img src="../assets/right.png" width="40" height="40" alt="button" @click="Getvideourl"/>
   </div>
 
     <div class="wrapper">
@@ -58,7 +60,9 @@ export default {
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           opacity: '0.8',
-          boxShadow: '0px 5px 10px 3px rgba(0, 0, 0, 0.4)'
+          boxShadow: '0px 5px 10px 3px rgba(0, 0, 0, 0.4)',
+          transition:'all o.6s',
+          filter: 'grayscale(50%)'
       },
       movie:[{
           height:'120px',
@@ -95,6 +99,11 @@ export default {
       ],
       backconststyle:'home1',
       number:0,
+      number1:0,
+      flagvideo: true,
+      buttontype:'pause',
+      videoname:require('../assets/movie1.mp4'),
+      videourl:[require('../assets/movie1.mp4'),require('../assets/girl.mp4'),require('../assets/video.mp4'),require('../assets/harry.mp4'),require('../assets/starwar.mp4')],
       backstyle:['home1','home2','home3','home4','home5','home6']
     };
   },
@@ -122,6 +131,30 @@ export default {
       onSearch(){
 
       },
+      Getvideourl(){
+        console.log(this.number1);
+        this.number1++;
+        console.log(this.number1);
+        this.videoname = this.videourl[(this.number1)%5];
+        console.log(this.videoname);
+        const video = this.$refs.video;
+        video.play();
+      },
+      stopvideo(){
+        const video = this.$refs.video;
+        if(this.flagvideo){
+          video.pause();
+          console.log("y");
+          this.buttontype = "play-circle";
+          this.flagvideo = false;
+        }
+        else if(!this.flagvideo){
+          video.play();
+          console.log("n");
+          this.buttontype = "pause";
+          this.flagvideo = true;
+        }
+      },
       Getbackstyle(){
         console.log(this.backstyle[this.number]);
         if(this.number<6){
@@ -141,60 +174,21 @@ export default {
 </script>
 
 <style scoped>
+video{
+  position:fixed;
+  right:0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -999;
+  transition: all 2s;
+}
 .home1 {
   background-color: whitesmoke;
   min-width: 100%;
-  background-image: url(../assets/Movieback.jpg);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
-  filter:brightness(1);
-  transition: all 1s;
-}
-.home2 {
-  background-color: whitesmoke;
-  min-width: 100%;
-  background-image: url(../assets/back1.jpg);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
-  filter:brightness(1);
-  transition: all 1s;
-}
-.home3 {
-  background-color: whitesmoke;
-  min-width: 100%;
-  background-image: url(../assets/back7.jpg);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
-  filter:brightness(1);
-  transition: all 1s;
-}
-.home4 {
-  background-color: whitesmoke;
-  min-width: 100%;
-  background-image: url(../assets/back8.jpg);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
-  filter:brightness(1);
-  transition: all 1s;
-}
-.home5 {
-  background-color: whitesmoke;
-  min-width: 100%;
-  background-image: url(../assets/back4.jpg);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
-  filter:brightness(1);
-  transition: all 1s;
-}
-.home6 {
-  background-color: whitesmoke;
-  min-width: 100%;
-  background-image: url(../assets/back6.jpg);
+  background-color:black;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
@@ -214,7 +208,7 @@ export default {
   box-shadow: 0px 2px 10px 3px rgba(0, 0, 0, 0.4);
   opacity: 0.6;
   border-radius: 5px 15px 5px 5px;
-  margin-bottom: 60px;
+  margin-bottom: 80px;
 }
 
 .search {
@@ -245,23 +239,12 @@ export default {
   display:inline-block;
 }
 
-/*
-.mouse-wheel-item{
-  height:120px;
-  width: 200px;
-  margin-right: 1%;
-  font-size:24px;
-  display:inline-block;
-  text-align:center;
-  padding:20 20px;
-  line-height:50px;
-  border-radius:5px 5px 5px 5px;
-  background: url(../assets/Movieback.jpg);
-  background-size: cover;
-  background-position: center center;
-  opacity: 0.6;
-  box-shadow: 0px 2px 10px 3px rgba(0, 0, 0, 0.4);
-}*/
+
+.mouse-wheel-item:hover{
+transform: scale(1.4);
+-webkit-filter: brightness(2.3);
+filter: brightness(2.3);
+}
 
 .mouse-wheel-wrapper{
     width:90%;
