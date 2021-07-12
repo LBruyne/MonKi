@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public class SearchEngineManager {
+public class SearchEngineManager extends BaseManager {
 
     public Object search() {
         return null;
@@ -19,4 +19,5 @@ public class SearchEngineManager {
     public Object recommend() {
         return null;
     }
+
 }

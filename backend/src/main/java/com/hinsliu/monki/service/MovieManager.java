@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public class MovieManager {
+public class MovieManager extends BaseManager {
 
     public Object get() {
         return null;

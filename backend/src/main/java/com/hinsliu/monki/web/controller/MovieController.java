@@ -1,5 +1,6 @@
 package com.hinsliu.monki.web.controller;
 
+import com.hinsliu.monki.common.annotation.AuthToken;
 import com.hinsliu.monki.domain.common.RpcResult;
 import com.hinsliu.monki.domain.query.MovieInfoQuery;
 import com.hinsliu.monki.domain.query.RecommendQuery;
@@ -29,6 +30,7 @@ public class MovieController {
     @Resource
     private MovieManager movieManager;
 
+    @AuthToken
     @ApiOperation(value = "返回一部电影的具体信息")
     @RequestMapping(value = "/get", method = {RequestMethod.GET})
     public RpcResult get(@ModelAttribute() @Validated MovieInfoQuery query) {

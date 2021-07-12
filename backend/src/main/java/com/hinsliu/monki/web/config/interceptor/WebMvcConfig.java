@@ -23,7 +23,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(interceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/error")
-                .excludePathPatterns("/app/login")
+                .excludePathPatterns("/app/login/**")
                 .excludePathPatterns("/app/callback")
                 .excludePathPatterns("/default/**");
     }

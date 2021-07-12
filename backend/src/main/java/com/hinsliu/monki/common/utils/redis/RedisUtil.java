@@ -1,8 +1,12 @@
 package com.hinsliu.monki.common.utils.redis;
 
+import com.hinsliu.monki.common.UtilConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
+
+import javax.rmi.CORBA.Util;
 
 /**
  * @Description: utils for Redis(Jedis)
@@ -12,13 +16,11 @@ import redis.clients.jedis.Jedis;
 @Slf4j
 public class RedisUtil {
 
-    @Value("${redis.url}")
-    private String server;
+    private String server = UtilConstant.redisServer;
 
-    @Value("${redis.port}")
-    private Integer port;
+    private Integer port = UtilConstant.redisPort;
 
-    // expire at 1000 seconds later.
+    // Expire at 1000 seconds later.
     private static final Integer EXPIRE_TIME = 1000;
 
     private static RedisUtil redisUtil;
@@ -55,12 +57,17 @@ public class RedisUtil {
 
     public void set(String key, String value) {
         client.setex(key, EXPIRE_TIME, value);
-        log.warn("REDIS写入键值对{}:{}", key, value);
+        log.info("REDIS写入键值对{}:{}", key, value);
     }
 
     public String get(String key) {
         String value = client.get(key);
-        log.warn("REDIS读取键值对{}:{}", key, value);
+        log.info("REDIS读取键值对{}:{}", key, value);
         return value;
+    }
+
+    public void remove(String key) {
+        client.del(key);
+        log.info("REDIS读取键{}", key);
     }
 }

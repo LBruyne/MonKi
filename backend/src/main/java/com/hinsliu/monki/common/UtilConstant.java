@@ -1,10 +1,15 @@
 package com.hinsliu.monki.common;
 
+import io.swagger.models.auth.In;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 /**
  * @Description: 常量
  * @author: liuxuanming
  * @date: 2021/05/25 4:25 下午
  */
+@Component
 public class UtilConstant {
 
     // 默认连接符
@@ -30,4 +35,10 @@ public class UtilConstant {
 
     // 请求头中带有Token的键
     public static final String TOKEN_HEADER = "Authorization";
+
+    // Redis server
+    public static String redisServer = "www.neohugh.art";
+
+    // Redis port
+    public static Integer redisPort = 6379;
 }

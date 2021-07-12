@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * RPC统一异常控制器
  */
 @Slf4j
-@RestControllerAdvice(basePackages = "com.hinsliu.iotapp.web.controller")
+@RestControllerAdvice(basePackages = "com.hinsliu.monki.web.controller")
 public class RpcExceptionController {
 
     /**

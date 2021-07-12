@@ -13,7 +13,18 @@ spring:
       host: www.neohugh.art
       port: 27017
       username: monki
-      password: monki
+  mail:
+    host: smtp.163.com
+    username: monkimovie@163.com
+    password: TUPBTQUBGKEFQSUM
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            required: true
+            enable: true
 
 mybatis:
   type-aliases-package: com.hinsliu.monki.domain
@@ -26,7 +37,7 @@ logging:
     path: ./logs
 
 redis:
-  url: www.neohugh.art
+  server: www.neohugh.art
   port: 6379
 
 

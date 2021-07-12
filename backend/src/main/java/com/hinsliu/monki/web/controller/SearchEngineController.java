@@ -1,5 +1,6 @@
 package com.hinsliu.monki.web.controller;
 
+import com.hinsliu.monki.common.annotation.AuthToken;
 import com.hinsliu.monki.domain.common.RpcResult;
 import com.hinsliu.monki.domain.query.RecommendQuery;
 import com.hinsliu.monki.domain.query.SearchQuery;
@@ -27,18 +28,18 @@ public class SearchEngineController {
     @Resource
     private SearchEngineManager searchEngineManager;
 
+    @AuthToken
     @ApiOperation(value = "搜索服务，返回搜索的电影列表")
     @RequestMapping(value = "/search", method = {RequestMethod.GET})
     public RpcResult search(@ModelAttribute @Validated SearchQuery query) {
         return RpcResult.successResult(searchEngineManager.search());
     }
 
+    @AuthToken
     @ApiOperation(value = "推荐服务，返回推荐的电影列表")
     @RequestMapping(value = "/recommend", method = {RequestMethod.GET})
     public RpcResult recommend(@ModelAttribute @Validated RecommendQuery query) {
         return RpcResult.successResult(searchEngineManager.recommend());
     }
-
-
 
 }

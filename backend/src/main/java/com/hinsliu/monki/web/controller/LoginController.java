@@ -33,7 +33,7 @@ public class LoginController {
         return  RpcResult.successResult();
     }
 
-    @ApiOperation(value = "根据提交的验证码进行验证，成功返回用户ID")
+    @ApiOperation(value = "根据提交的验证码进行验证，成功返回Token")
     @RequestMapping(value = "/login/verify", method = {RequestMethod.POST})
     public RpcResult verify(@RequestBody @Validated LoginVerifyQuery query) {
         return RpcResult.successResult(userInfoManager.verify(query));
