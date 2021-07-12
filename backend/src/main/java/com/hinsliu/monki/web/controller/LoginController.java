@@ -44,9 +44,4 @@ public class LoginController {
         return RpcResult.errorResult("未授权行为");
     }
 
-    @RequestMapping(value = "/error", method = {RequestMethod.POST,RequestMethod.GET})
-    public RpcResult error() {
-        return RpcResult.errorResult("服务器内部错误");
-    }
-
 }

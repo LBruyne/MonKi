@@ -1,5 +1,6 @@
 package com.hinsliu.monki.web.controller;
 
+import com.hinsliu.monki.domain.common.RpcResult;
 import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +21,13 @@ import java.util.Map;
  */
 @Api(description = "测试接口")
 @RestController
-@RequestMapping(value = "/default")
+@RequestMapping
 public class DefaultController {
 
-    private static Logger logger = LoggerFactory.getLogger(DefaultController.class);
+    @RequestMapping(value = "/error", method = {RequestMethod.POST,RequestMethod.GET})
+    public RpcResult error() {
+        return RpcResult.errorResult("服务器内部错误");
+    }
 
     @RequestMapping(value = "/monki", method = {RequestMethod.GET})
     public String hello() {
