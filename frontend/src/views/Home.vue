@@ -17,7 +17,7 @@
     </div>
     
   <div class="nextbutton">
-    <img src="../assets/right.png" width="40" height="40" alt="button" @click="Getvideourl"/>
+    <img class="next" src="../assets/right.png" width="40" height="40" alt="button" @click="Getvideourl"/>
   </div>
 
     <div class="wrapper">
@@ -264,6 +264,10 @@ filter: brightness(2.3);
   padding-left: 92%;
   display: inline-block;
   height: 10px;
+}
+
+.next:hover{
+  transform: scale(1.4);
 }
 
 #div1{
