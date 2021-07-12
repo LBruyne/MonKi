@@ -1,5 +1,5 @@
 <template>
-  <div class="search" style ="minHeight: calc(100vh)">
+  <div class="search" style="minHeight: calc(100vh)">
 
   </div>
 </template>
