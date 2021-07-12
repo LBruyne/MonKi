@@ -193,7 +193,6 @@ video{
   background-size: cover;
   background-position: center center;
   filter:brightness(1);
-  transition: all 1s;
 }
 .loginbutton{
   display: inline-block;
