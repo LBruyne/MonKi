@@ -59,18 +59,135 @@
       <div class="wrapper">
         <div class="mouse-wheel-wrapper" ref="scroll2">
           <div class="mouse-wheel-content">
-            <div class="mouse-wheel-item" v-for="n in 50" :key="n">
-             <a style="color: white" href="https://music.163.com/#/search/m/?s=%E4%B8%A4%E5%8F%AA%E8%80%81%E8%99%8E&type=1">
-             两只老虎-群星
-             </a>
-             <a-icon type="link" :style="{ fontSize: '20px', color: '#ffffff' , marginRight: '50px' ,float:'right' }"/>
+            <div class="mouse-wheel-item1">
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+                            dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+            </div>
+            <div :style="{backgroundColor:'#000000',height:'1px'}"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wrapper1">
+        <div class="mouse-wheel-wrapper" ref="scroll3">
+          <div class="mouse-wheel-content">
+            <div class="mouse-wheel-item2" v-for="n in 50" :key="n">
             </div>
           </div>
         </div>
       </div>
 
-
-      <div :style="{backgroundColor:'#000000',height:'400px'}"></div>
+      <div :style="{backgroundColor:'#000000',height:'100px'}"></div>
     </div>
   </div>
 </template>
@@ -90,6 +207,9 @@ export default {
           mouseWheel: true
         })
         this.bs2 = new BScroll(this.$refs.scroll2, {
+          mouseWheel: true
+        })
+        this.bs3 = new BScroll(this.$refs.scroll3, {
           mouseWheel: true
         })
       },
@@ -235,13 +355,48 @@ export default {
 .wrapper{
   width: 50%;
   height: 400px;
-  margin-top: 1%;
+  margin-top: 2%;
   margin-left: 2%;
+  display: inline-block;
+}
+
+.wrapper1{
+  width: 40%;
+  margin-top: 2%;
+  height: 400px;
+  margin-right: 2%;
   display: inline-block;
 }
 
 .mouse-wheel-content{
   display:inline-block;
+}
+
+
+.mouse-wheel-item2:hover{
+transform: scale(1.1);
+-webkit-filter: brightness(1.2);
+filter: brightness(1.2);
+opacity: 0.8;
+box-shadow: 0px 5px 10px 3px rgba(255, 255, 255, 0.3);
+}
+
+.mouse-wheel-item2{
+  height:300px;
+  color: aliceblue;
+  width: 500px;
+  font-size:16px;
+  padding-left:1.5%;
+  padding-top: 1%;
+  text-align:left;
+  margin-bottom: 10%;
+  border-radius: 6px;
+  opacity: 0.5;
+  background-image: url('../assets/back3.jpg');
+  background-size:cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  box-shadow: 0px 2px 0px 0px rgba(255, 255, 255, 0.3);
 }
 
 .mouse-wheel-item:hover{
@@ -265,6 +420,28 @@ box-shadow: 0px 5px 10px 3px rgba(255, 255, 255, 0.3);
   border-radius: 6px;
   opacity: 0.5;
   box-shadow: 0px 2px 0px 0px rgba(255, 255, 255, 0.3);
+}
+
+.mouse-wheel-item1{
+  height: auto;
+  color: rgb(194, 194, 194);
+  width: 600px;
+  font-size:16px;
+  padding-left:1.5%;
+  padding-top: 1%;
+  text-align:center;
+  margin-bottom: 5%;
+  background-color: black;
+  border-radius: 6px;
+  opacity: 0.5;
+  box-shadow: 0px 2px 0px 0px rgba(255, 255, 255, 0.3);
+}
+.mouse-wheel-item1:hover{
+transform: scale(1.1);
+-webkit-filter: brightness(2.3);
+filter: brightness(2.3);
+opacity: 0.8;
+box-shadow: 0px 5px 10px 3px rgba(255, 255, 255, 0.3);
 }
 
 .mouse-wheel-wrapper{
