@@ -32,19 +32,45 @@
               type="user"
               size="large"
               class="searchtext"
-              v-if="showLogin != null"
-              @click="showModal"
+              v-if="isLogin == null"
+              @click="showLogin"
             />
             <h1 class="searchtext" @click="showLogout" v-else>
-              {{ showLogin }}
+              {{ isLogin }}
             </h1>
           </a-col>
         </a-row>
       </div>
     </div>
     <div class="body" style="minHeight: calc(100vh - 150px)">
+      <!-- 登出框框 -->
       <div ref="replayModal">
-      <a-modal v-model="visible" :title="null" :footer="null" :closable="false" :getContainer='()=>$refs.replayModal'>
+      <a-modal v-model="visible_logout" :title="null" :footer="null" :closable="false" :getContainer='()=>$refs.replayModal'>
+        <a-icon type="question-circle" class="logouttext"/>
+        <div class="logouttext" style="text-align:center;margin-top:5%">Are you sure to Logout?</div>
+        <a-button
+              size="large"
+              type="dashed"
+              htmlType="submit"
+              class="login-input"
+              style="width:100px;margin-top:65px;opacity:30%;margin-left:150px"
+              block
+              @click="logoutNo"
+            >Cancel</a-button>
+            <a-button
+              size="large"
+              type="danger"
+              htmlType="submit"
+              class="login-input"
+              style="width:100px;opacity:50%;margin-left:10px"
+              @click="logoutYes"
+              block
+            >Yes</a-button>
+      </a-modal>
+      </div>
+      <!-- 登入框框 -->
+      <div ref="replayModal">
+      <a-modal v-model="visible_login" :title="null" :footer="null" :closable="false" :getContainer='()=>$refs.replayModal'>
         <a-form
           id="formLogin"
           class="user-layout-login"
@@ -107,11 +133,12 @@
 export default {
   data() {
     return {
-      visible: false,
+      visible_login: false,
+      visible_logout:false,
       count: 60,
       issend: true,
       priority:0,
-      showLogin: window.localStorage.getItem("email"),
+      isLogin: this.$store.state.user.email,
       form: this.$form.createForm(this),
     };
   },
@@ -121,17 +148,19 @@ export default {
     goTo(path) {
       this.$router.push(path);
     },
-    showModal() {
-      this.visible = true;
+    showLogin() {
+      this.visible_login = true;
     },
     showLogout() {
-      this.$confirm({
-        title: "Do you want to log out?",
-        onOk() {
-          (this.showLogin = null), this.$store.commit("logout");
-        },
-        onCancel() {},
-      });
+      this.visible_logout = true;
+    },
+    logoutYes(){
+      this.$store.commit('logout')
+      this.visible_logout = false
+      location.reload()
+    },
+    logoutNo(){
+      this.visible_logout = false
     },
     choosePriority(num){
       console.log(num)
@@ -178,10 +207,8 @@ export default {
       const TIME_COUNT = 60
       this.form.validateFields(['email'],(emailError,value)=>{
         if(!emailError){
-            // console.log(value.email)
-            // TODO: 接口
-          this.axios.post('/api/sendCaptcha', {
-          email: value.email,
+          this.axios.post('/api/app/login/getVerifyCode', {
+            email: value.email,
           })
           .then( ()=> {
             window.alert('The ValidCode Has Been Send, Please Check Your Email!')
@@ -227,17 +254,21 @@ export default {
         validateFields(validateFieldsKey, { force: true }, (err, values) => {
         if (!err) {
           console.log('login form', values)
-          // TODO: 接口
-         this.axios.post('/api/registration', {
+         this.axios.post('/api/app/login/verify', {
             email: values.email,
-            auth_code:values.validcode,
+            verifyCode:values.validcode,
           })
           .then((response)=> {
             console.log(response);
             
             window.alert(response.data.message)
-            if(response.data.code === 3){
+            if(response.data.code === 0){
                 location.reload()
+                this.$store.commit('setID',response.data.data)
+                this.$store.commit('setEmail',values.email)
+                console.log(this.$store.state.user.id)
+                console.log(this.$store.state.user.email)
+                this.isLogin=this.$store.state.user.email
             }
           })
           .catch(function (error) {
@@ -250,7 +281,8 @@ export default {
     },
   },
   mounted() {
-
+    console.log(this.$store.state.user.id)
+    console.log(this.$store.state.user.email)
   },
 };
 </script>
@@ -302,7 +334,7 @@ export default {
   top: 30%;
   width: 20%;
   height: 100%;
-  right: 0%;
+  right: 5%;
   text-align: center;
 }
 
@@ -322,7 +354,11 @@ export default {
   color: aliceblue;
   bottom: 0;
 }
-
+.logouttext {
+  font-size:25px;
+  color: aliceblue;
+  bottom: 0;
+}
 .login-input {
   box-shadow: 0px 2px 10px 3px rgba(0, 0, 0, 0.4);
   opacity: 0.6;
