@@ -1,109 +1,203 @@
 <template>
   <div class="result" style="minHeight: calc(100vh)">
-    <div class="head">
-      <div class="left">
-        <div class="searchtext" >
-          <div id="div0" @click="choosePriority('0')" ><a style="color: white" ><a-icon type="instagram" /></a></div>
-          <div id="div1" @click="choosePriority('1')"><a style="color: white" >Movie</a></div>
-          <div id="div2" @click="choosePriority('2')"><a style="color: white">Location</a></div>
-          <div id="div3" @click="choosePriority('3')"><a style="color: white" >Music</a></div>
-        </div>
-        <br>
-        <a-input-search
-          class="input-box"
-          placeholder="Please Input Search Text"
-          style="width: 400px;"
-          @search="onSearch"
-          size="large"
-        />
-      </div>
-      <div class="right">
-        <a-row>
-          <a-col :span="12">
-            <a-icon
-              type="home"
-              size="large"
-              class="searchtext"
-              @click="goTo('/home')"
-            />
-          </a-col>
-          <a-col :span="12">
-            <a-icon
-              type="user"
-              size="large"
-              class="searchtext"
-              v-if="showLogin != null"
-              @click="showModal"
-            />
-            <h1 class="searchtext" @click="showLogout" v-else>
-              {{ showLogin }}
-            </h1>
-          </a-col>
-        </a-row>
-      </div>
+    <div class="content">
+    <div class="moviename">
+          Call me by your name
     </div>
-    <div class="body" style="minHeight: calc(100vh - 150px)">
-      <div ref="replayModal">
-      <a-modal v-model="visible" :title="null" :footer="null" :closable="false" :getContainer='()=>$refs.replayModal'>
-        <a-form
-          id="formLogin"
-          class="user-layout-login"
-          ref="formLogin"
-          :form="form"
-          @submit="handleSubmit"
-        >
-        <a-form-item>
-            <a-input
-              class="login-input"
-              size="large"
-              type="text"
-              placeholder="Email Address"
-              v-decorator="[
-                'email',
-                {rules: [{ required: true, message: 'Please Enter the Email Address!'}, { validator: checkEmail }], validateTrigger: 'blur'}
-              ]"
-            >
-              <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }"/>
-            </a-input>
-          </a-form-item>
-          <a-form-item>
-            <a-input-search
-            class="login-input"
-              size="large"
-              type="text"
-              placeholder="ValidCode"
-              @search="sendcode"
-              v-decorator="[
-                'validcode',
-                {rules: [{ required: true, message: 'Please Enter the ValidCode!'}], validateTrigger: 'blur'}
-              ]"
-            >
-              <a-icon slot="prefix" type="key" :style="{ color: 'rgba(0,0,0,.25)' }"/>
-               <a-button v-if="issend" type="dashed" slot="enterButton">Get ValidCode</a-button>
-               <a-button v-if="!issend" disabled slot="enterButton">After {{ count }}s can send again</a-button>
-            </a-input-search>
-          </a-form-item>
+    <div class="search">
+      <a-input-search class="input-box" placeholder="Please Input Search Text" style="width: 400px" @search="onSearch" size="small"/>
+    </div>
+    <div id="div2"><a href="https://movie.douban.com/" style="color: white">Movie |</a></div>
+    <div id="div3"><a href="https://map.baidu.com/" style="color: white">Location</a></div>
+    <div id="div4"><a href="https://music.163.com/" style="color: white">Music</a></div>
+      <div class="card">
+      <div class="text-box">
+          <br/>
+          <div class="Movietime">Time:</div>
+          <div class="Movielocation">Location:</div>
+          <div class="Movietype">Type:</div>
+          <div class="Movielanguage">Language:</div>
+          <div class="Moviedirector">Director:</div>
+</div>
+    </div>
+    <div class="down" :style="{ width: '10%', marginLeft:'2%',paddingTop:'15%' }">
+        <a-icon type="chrome" spin :style="{ fontSize: '40px', color: '#ffffff' , marginRight: '50px' ,float:'left' }"/>
+    </div>
+    </div>
 
-            <a-form-item style="text-align:center">
-            <a-button
-              size="large"
-              type="dashed"
-              htmlType="submit"
-              class="login-input"
-              style="width:120px;"
-              block
-            >Login</a-button>
-          </a-form-item>
-        </a-form>
-      </a-modal>
+
+
+    <div class="article">
+      <div class="music" :style="{ width: '10%', marginLeft:'10%', marginTop:'4%', fontSize:'24px',color:'#ffffff'}">
+        Music
       </div>
+      
+      <div class="wrapper">
+        <div class="mouse-wheel-wrapper" ref="scroll1">
+          <div class="mouse-wheel-content">
+            <div class="mouse-wheel-item" v-for="n in 50" :key="n">
+             <a style="color: white" href="https://music.163.com/#/search/m/?s=%E4%B8%A4%E5%8F%AA%E8%80%81%E8%99%8E&type=1">
+             两只老虎-群星
+             </a>
+             <a-icon type="link" :style="{ fontSize: '20px', color: '#ffffff' , marginRight: '50px' ,float:'right' }"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="poster">
+        <div class="main-circle">
+            <div class="circle">
+                <div class="circle-heart"></div>
+            </div>
+        </div>        
+      </div>
+
+      <div class="Movietext" :style="{ width: '10%', float:'right', marginTop:'10%', fontSize:'30px',color:'#ffffff'}" >
+        Location
+      </div>
+      <div class="wrapper">
+        <div class="mouse-wheel-wrapper" ref="scroll2">
+          <div class="mouse-wheel-content">
+            <div class="mouse-wheel-item1">
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+                            dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+            </div>
+            <div :style="{backgroundColor:'#000000',height:'1px'}"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wrapper1">
+        <div class="mouse-wheel-wrapper" ref="scroll3">
+          <div class="mouse-wheel-content">
+            <div class="mouse-wheel-item2" v-for="n in 50" :key="n">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div :style="{backgroundColor:'#000000',height:'100px'}"></div>
     </div>
   </div>
 </template>
 
 
 
-<script>
+<script type="text/ecmascript-6">
+import BScroll from '@better-scroll/core'
+import MouseWheel from '@better-scroll/mouse-wheel'
+BScroll.use(MouseWheel)
 export default {
   data() {
     return {
@@ -118,227 +212,303 @@ export default {
   name: "Result",
   components: {},
   methods: {
-    goTo(path) {
-      this.$router.push(path);
-    },
-    showModal() {
-      this.visible = true;
-    },
-    showLogout() {
-      this.$confirm({
-        title: "Do you want to log out?",
-        onOk() {
-          (this.showLogin = null), this.$store.commit("logout");
-        },
-        onCancel() {},
-      });
-    },
-    choosePriority(num){
-      console.log(num)
-      if(num==0){
-        this.divInit()
-      }
-      else if(num == 1){
-        this.divInit()
-        document.getElementById('div1').style.fontSize="30px";
-        document.getElementById('div0').style.marginTop="10px";
-        document.getElementById('div2').style.marginTop="10px";
-        document.getElementById('div3').style.marginTop="10px";
-        this.priority=1
-      }
-      else if(num == 2){
-        this.divInit()
-        document.getElementById('div2').style.fontSize="30px";
-        document.getElementById('div0').style.marginTop="10px";
-        document.getElementById('div1').style.marginTop="10px";
-        document.getElementById('div3').style.marginTop="10px";
-        this.priority=2
-      }
-      else if(num == 3){
-        this.divInit()
-        document.getElementById('div3').style.fontSize="30px";
-        document.getElementById('div0').style.marginTop="10px";
-        document.getElementById('div2').style.marginTop="10px";
-        document.getElementById('div1').style.marginTop="10px";
-        this.priority=3
-      }
-      console.log(this.priority)
-    },
-    divInit(){
-        document.getElementById('div1').style.fontSize="20px";
-        document.getElementById('div2').style.fontSize="20px";
-        document.getElementById('div3').style.fontSize="20px";
-        document.getElementById('div1').style.marginTop="0px";
-        document.getElementById('div2').style.marginTop="0px";
-        document.getElementById('div3').style.marginTop="0px";
-        document.getElementById('div0').style.marginTop="0px";
-        this.priority=0
-    },
-    sendcode() {
-      const TIME_COUNT = 60
-      this.form.validateFields(['email'],(emailError,value)=>{
-        if(!emailError){
-            // console.log(value.email)
-            // TODO: 接口
-          this.axios.post('/api/sendCaptcha', {
-          email: value.email,
-          })
-          .then( ()=> {
-            window.alert('The ValidCode Has Been Send, Please Check Your Email!')
-            if (!this.timer) {
-              this.count = TIME_COUNT
-              this.issend = false
-              this.timer = setInterval(() => {
-                if (this.count > 0 && this.count <= TIME_COUNT) {
-                  this.count--;
-                } else {
-                  this.issend = true;
-                  clearInterval(this.timer);
-                  this.timer = null;
-                }
-              }, 1000);
-            }
-          })
-          .catch(function (error) {
-            console.log(error)
-            window.alert('ValidCode Send ERROR!')
-          });
-        }
-        else{
-          console.log('********emailError');
-        }
-      });
-    },
-
-    checkEmail (rule, value, callback) {
-      const regex = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/
-      if (!regex.test(value)) {
-        callback('Please Enter the Valid Email!')
-      }
-      callback()
-    },
-
-    handleSubmit (e) {
-      e.preventDefault()
-      const {
-        form: { validateFields },
-      } = this
-        const validateFieldsKey = ['email', 'validcode']
-        validateFields(validateFieldsKey, { force: true }, (err, values) => {
-        if (!err) {
-          console.log('login form', values)
-          // TODO: 接口
-         this.axios.post('/api/registration', {
-            email: values.email,
-            auth_code:values.validcode,
-          })
-          .then((response)=> {
-            console.log(response);
-            
-            window.alert(response.data.message)
-            if(response.data.code === 3){
-                location.reload()
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-        } else {
-          console.log("login err")
-        }
-      })
-    },
+      init() {
+        this.bs = new BScroll(this.$refs.scroll1, {
+          mouseWheel: true
+        })
+        this.bs2 = new BScroll(this.$refs.scroll2, {
+          mouseWheel: true
+        })
+        this.bs3 = new BScroll(this.$refs.scroll3, {
+          mouseWheel: true
+        })
+      },
   },
-  mounted() {
-
-  },
+  mounted(){
+    this.init();
+  }
 };
 </script>
 
 <style scoped>
 .result {
+  min-width: 100%;
+  background-color:black;
+  filter:brightness(1);
+}
+.article{
+  background-color: black;
+  height:auto;
   width: 100%;
-  height: 100%;
-  position: relative;
-  top: 0;
-  left: 0;
-  background: url("../assets/Movieback.jpg") no-repeat fixed;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+}
+
+.content{
+  background-image: url("../assets/back6.jpg");
+  background-repeat: no-repeat;
   background-size: cover;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  box-sizing: border-box;
+  min-width: 100%;
+  min-height: 600px;
+  width: auto;
   background-position: center center;
+  height: auto;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 30px 90px;
 }
 
-.result:after {
-  content: "";
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  left: 0;
-  top: 0;
-  background: inherit;
-  filter: blur(5px);
-  background-color: rgba(141, 141, 141, 0.5);
-  background-blend-mode: darken;
+.moviename{
+  font-size: 100px;
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  color:aliceblue;
+  padding-left: 2%;
+  display: inline-block;
+  width: 33%;
 }
 
-.head {
-  position: relative;
-  height: 150px;
-  width: 100%;
-  display: flex;
-  z-index: 10;
+#div4,#div3,#div2{
+  float:right;
+  margin-right: 1.2%;
+  margin-top: 3%;
 }
 
-.left {
-  position: absolute;
-  top: 10%;
-  height:100%;
-  left: 5%;
-}
-.right {
-  position: absolute;
-  top: 30%;
-  width: 20%;
-  height: 100%;
-  right: 0%;
-  text-align: center;
+
+.search {
+  margin-top: 3%;
+  opacity: 0.5;
+  float: right;
+  margin-right: 3%;
 }
 
-#div1,#div2,#div3,#div0{
-  float:left;
-  margin-right: 4%;
+.searchtext{
+  font-size: 30px;
+  color:aliceblue;
 }
 
-.input-box {
-  box-shadow: 0px 2px 10px 3px rgba(0, 0, 0, 0.4);
-  opacity: 0.6;
-  border-radius: 5px 15px 5px 5px;
-  margin-bottom: 20px;
-}
-.searchtext {
-  font-size:20px;
-  color: aliceblue;
-  bottom: 0;
-}
-
-.login-input {
-  box-shadow: 0px 2px 10px 3px rgba(0, 0, 0, 0.4);
-  opacity: 0.6;
-  border-radius: 5px 5px 5px 5px;
-}
-div /deep/ .ant-modal-body{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,30%);
+.card{
+    vertical-align: top;
+    word-spacing:0;
+    float: right;
+    margin-right: 3.5%;
+    margin-top: -13%;
+    top: 0;
+    width: 39%;
     height: 260px;
-     width:450px;
-     padding:50px 30px 30px;
-     background: rgba(0,0,0,.2);
-    box-sizing:border-box;
-     box-shadow: 0px 15px 25px rgba(0,0,0,.5);
-     border-radius:15px;
+    line-height: 20px;
+    opacity: 0.5;
+    border-radius: 20px;
+    box-shadow: 0px 2px 9px 5px rgba(0, 0, 0, 0.4);
 }
+
+.card:hover{
+  opacity: 1;
+}
+
+.card .text-box{
+    margin-top: 20px;
+    margin-left: 4%;
+    vertical-align: top;
+    margin-top: 40px;
+    height: 307px;
+    margin-top: 0px;
+    display: inline-block;
+    text-align: left;
+}
+
+.card .text-box .Movietype{
+    left: 411px;
+    top: 260px;
+    width: 186px;
+    height: 50px;
+    color: rgba(255, 255, 255, 100);
+    font-size: 28px;
+    text-align: left;
+}
+.card .text-box .Movietime{
+    left: 411px;
+    top: 213px;
+    width: 234px;
+    height: 50px;
+    color: rgba(255, 255, 255, 100);
+    font-size: 28px;
+    text-align: left;
+}
+
+.card .text-box .Movielocation{
+    left: 411px;
+    top: 308px;
+    width: 409px;
+    height: 50px;
+    color: rgba(255, 255, 255, 100);
+    font-size: 28px;
+    text-align: left;
+}
+
+.card .text-box .Movielanguage{
+    left: 411px;
+    top: 308px;
+    width: 409px;
+    height: 50px;
+    color: rgba(255, 255, 255, 100);
+    font-size: 28px;
+    text-align: left;
+}
+
+.card .text-box .Moviedirector{
+    left: 411px;
+    top: 404px;
+    width: 175px;
+    height: 50px;
+    color: rgba(255, 255, 255, 100);
+    font-size: 28px;
+    text-align: left;
+}
+
+.wrapper{
+  width: 50%;
+  height: 400px;
+  margin-top: 2%;
+  margin-left: 2%;
+  display: inline-block;
+}
+
+.wrapper1{
+  width: 40%;
+  margin-top: 2%;
+  height: 400px;
+  margin-right: 2%;
+  display: inline-block;
+}
+
+.mouse-wheel-content{
+  display:inline-block;
+}
+
+
+.mouse-wheel-item2:hover{
+transform: scale(1.1);
+-webkit-filter: brightness(1.2);
+filter: brightness(1.2);
+opacity: 0.8;
+box-shadow: 0px 5px 10px 3px rgba(255, 255, 255, 0.3);
+}
+
+.mouse-wheel-item2{
+  height:300px;
+  color: aliceblue;
+  width: 500px;
+  font-size:16px;
+  padding-left:1.5%;
+  padding-top: 1%;
+  text-align:left;
+  margin-bottom: 10%;
+  border-radius: 6px;
+  opacity: 0.5;
+  background-image: url('../assets/back3.jpg');
+  background-size:cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  box-shadow: 0px 2px 0px 0px rgba(255, 255, 255, 0.3);
+}
+
+.mouse-wheel-item:hover{
+transform: scale(1.1);
+-webkit-filter: brightness(2.3);
+filter: brightness(2.3);
+opacity: 0.8;
+box-shadow: 0px 5px 10px 3px rgba(255, 255, 255, 0.3);
+}
+
+.mouse-wheel-item{
+  height:70px;
+  color: aliceblue;
+  width: 500px;
+  font-size:16px;
+  padding-left:1.5%;
+  padding-top: 1%;
+  text-align:left;
+  margin-bottom: 5%;
+  background-color: black;
+  border-radius: 6px;
+  opacity: 0.5;
+  box-shadow: 0px 2px 0px 0px rgba(255, 255, 255, 0.3);
+}
+
+.mouse-wheel-item1{
+  height: auto;
+  color: rgb(194, 194, 194);
+  width: 600px;
+  font-size:16px;
+  padding-left:1.5%;
+  padding-top: 1%;
+  text-align:center;
+  margin-bottom: 5%;
+  background-color: black;
+  border-radius: 6px;
+  opacity: 0.5;
+  box-shadow: 0px 2px 0px 0px rgba(255, 255, 255, 0.3);
+}
+.mouse-wheel-item1:hover{
+transform: scale(1.1);
+-webkit-filter: brightness(2.3);
+filter: brightness(2.3);
+opacity: 0.8;
+box-shadow: 0px 5px 10px 3px rgba(255, 255, 255, 0.3);
+}
+
+.mouse-wheel-wrapper{
+    height:700px;
+    overflow:hidden;
+    text-align:center;
+} 
+
+.poster{
+  height:800px;
+  width: 650px;
+  float: right;
+  overflow:hidden;
+}
+
+    .main-circle{
+        width: 800px;
+        height: 800px;
+        /*定义动画效果，对应的"infinite",动画无限次播放，对应的"linear",动画从头到尾的速度是相同的。*/
+        animation: circle 6s infinite linear;
+        border-radius: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: black;
+        /*重复径向渐变 从中心开始沿着四周产生渐变效果，模拟出唱片那种感觉，不喜欢可以注释或删掉*/
+        background: repeating-radial-gradient(#111 0%, #000 5%);
+    }
+    .circle{
+        width: 400px;
+        height: 400px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+        border-radius: 100%;
+        background-color: red;
+        /*看不出旋转效果，所以使用图片*/
+        background-image: url('../assets/back6.jpg');
+        background-size: cover;
+    }
+    /*白色圆心，不需要可以直接删除，或者把背景色删掉或改为透明*/
+    .circle-heart{
+        width: 100px;
+        height: 100px;
+        margin: 0 auto;
+        border-radius: 100%;
+        background-color: #FFF;
+    }
+    @keyframes circle{
+        0%{
+            /*transform对元素进行旋转、缩放、移动或倾斜。以下就是旋转0度。*/
+            transform: rotate(0deg);
+        }
+        100%{
+            /*以下就是旋转360度*/
+            transform: rotate(360deg);
+        }
+    }
 </style>

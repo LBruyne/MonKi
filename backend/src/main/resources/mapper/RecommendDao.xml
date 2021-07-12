@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hinsliu.monki.dal.RecommendDao">
+  <resultMap id="BaseResultMap" type="com.hinsliu.monki.domain.model.RecommendDO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="uid" jdbcType="BIGINT" property="uid" />
+    <result column="movies" jdbcType="VARCHAR" property="movies" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `uid`, movies
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_recommend
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_recommend
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.hinsliu.monki.domain.model.RecommendDO" useGeneratedKeys="true">
+    insert into t_recommend (`uid`, movies)
+    values (#{uid,jdbcType=BIGINT}, #{movies,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.hinsliu.monki.domain.model.RecommendDO" useGeneratedKeys="true">
+    insert into t_recommend
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="uid != null">
+        `uid`,
+      </if>
+      <if test="movies != null">
+        movies,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="uid != null">
+        #{uid,jdbcType=BIGINT},
+      </if>
+      <if test="movies != null">
+        #{movies,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hinsliu.monki.domain.model.RecommendDO">
+    update t_recommend
+    <set>
+      <if test="uid != null">
+        `uid` = #{uid,jdbcType=BIGINT},
+      </if>
+      <if test="movies != null">
+        movies = #{movies,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hinsliu.monki.domain.model.RecommendDO">
+    update t_recommend
+    set `uid` = #{uid,jdbcType=BIGINT},
+      movies = #{movies,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

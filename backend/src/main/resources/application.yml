@@ -1,0 +1,53 @@
+server:
+  port: 8000
+
+spring:
+  datasource:
+    url: jdbc:mysql://www.neohugh.art:3306/monki?characterEncoding=utf8&useSSL=false
+    username: ${mysql.username:monki}
+    password: ${mysql.password:monki}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    mongodb:
+      database: monki
+      host: www.neohugh.art
+      port: 27017
+      username: monki
+  mail:
+    host: smtp.163.com
+    username: monkimovie@163.com
+    password: TUPBTQUBGKEFQSUM
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            required: true
+            enable: true
+
+mybatis:
+  type-aliases-package: com.hinsliu.monki.domain
+  mapper-locations: classpath:mapper/**/*.xml
+
+logging:
+  level:
+    root: INFO
+  file:
+    path: ./logs
+
+redis:
+  server: www.neohugh.art
+  port: 6379
+
+
+swagger:
+  enabled: true
+  title: MonKi Movie API
+  description: MonKi movie travalling search engine API document.
+  base-package: com.hinsliu.monki.web.controller
+  version: 1.0.0
+
+
+
+
