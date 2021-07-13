@@ -13,6 +13,7 @@
           class="input-box"
           placeholder="Please Input Search Text"
           style="width: 400px;"
+          v-model="text"
           @search="onSearch"
           size="large"
         />
@@ -185,6 +186,7 @@ export default {
       count: 60,
       issend: true,
       priority:0,
+      text:this.$store.state.search.search,
       test,
       isLogin: this.$store.state.user.email,
       form: this.$form.createForm(this),
@@ -340,10 +342,23 @@ export default {
     onChange(pageNumber) {
       console.log('Page: ', pageNumber);
     },
+    onSearch(){
+      this.$store.commit('setSearch',this.text)
+      console.log(this.text)
+      console.log(this.$store.state.search.search)
+      this.$router.push('/search')
+      location.reload()
+    },
+    getList()
+    {
+      // TODO:
+    }
   },
   mounted() {
     console.log(this.$store.state.user.id)
     console.log(this.$store.state.user.email)
+    console.log(this.$store.state.search.search)
+    this.getList()
   },
 };
 </script>
@@ -389,7 +404,7 @@ export default {
   position: absolute;
   top: 10%;
   height:100%;
-  left: 5%;
+  left: 55px;
 }
 .right {
   position: absolute;
@@ -542,10 +557,10 @@ div /deep/ .ant-modal-body{
     position: fixed;
     word-spacing:0;
     margin-bottom: 10px;
-    margin-top:10%;
+    margin-top:150px;
     top: 0;
     width: 367px;
-    height: 460px;
+    height: 430px;
     line-height: 20px;
     opacity: 0.8;
     border-radius: 20px;

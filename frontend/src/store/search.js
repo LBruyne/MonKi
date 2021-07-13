@@ -1,12 +1,12 @@
 export default{
     state:{
-        search:window.localStorage.getItem('search')?window.localStorage.getItem('search'):null,
+        search:window.localStorage.getItem('search')?window.localStorage.getItem('search'):undefined,
     },
     getters:{
         search:(state)=>{
-            if(state.search==null){
+            if(state.search==undefined){
                 let sessionSearch = localStorage.getItem("search");
-                if(sessionSearch !=null)
+                if(sessionSearch !=undefined)
                 {
                     state.search = JSON.parse(sessionSearch)
                     return sessionSearch
