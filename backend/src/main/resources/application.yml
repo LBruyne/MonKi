@@ -40,13 +40,16 @@ redis:
   server: www.neohugh.art
   port: 6379
 
-
 swagger:
   enabled: true
   title: MonKi Movie API
   description: MonKi movie travalling search engine API document.
   base-package: com.hinsliu.monki.web.controller
   version: 1.0.0
+
+elasticsearch:
+  server: 127.0.0.1
+  port: 9200
 
 
 

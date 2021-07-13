@@ -17,7 +17,7 @@ import javax.annotation.Resource;
  * @author: liuxuanming
  * @date: 2021/07/12 1:39 下午
  */
-@Api(value = "用户登录接口")
+@Api(description = "用户登录接口")
 @Slf4j
 @RestController
 @RequestMapping("/app")
