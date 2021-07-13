@@ -5,6 +5,7 @@ import com.hinsliu.monki.domain.model.MovieDO;
 import com.hinsliu.monki.domain.model.MusicDO;
 import com.hinsliu.monki.domain.view.LocationDTO;
 import com.hinsliu.monki.domain.view.MovieDTO;
+import com.hinsliu.monki.domain.view.MovieMetaDTO;
 import com.hinsliu.monki.domain.view.MusicDTO;
 import org.springframework.beans.BeanUtils;
 
@@ -36,6 +37,14 @@ public class CopyUtils {
         LocationDTO locationDTO = new LocationDTO();
         BeanUtils.copyProperties(locationDO, locationDTO);
         return locationDTO;
+    }
+
+    public static MovieMetaDTO MovieDTOToMovieMetaDTO(MovieDTO movieDTO) {
+        MovieMetaDTO movieMetaDTO = new MovieMetaDTO();
+        BeanUtils.copyProperties(movieDTO, movieMetaDTO);
+        movieMetaDTO.setMusic(movieDTO.getMusic().stream().map(MusicDTO::getName).collect(Collectors.toList()));
+        movieMetaDTO.setVisit(movieDTO.getLocation().getVisit());
+        return movieMetaDTO;
     }
 
 }

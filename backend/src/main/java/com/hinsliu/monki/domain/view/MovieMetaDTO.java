@@ -39,9 +39,9 @@ public class MovieMetaDTO {
     private String year;
 
     @ApiModelProperty(value = "配乐信息")
-    private List<MusicDTO> music;
+    private List<String> music;
 
     @ApiModelProperty(value = "取景地信息")
-    private LocationDTO location;
+    private List<String> visit;
 
 }

@@ -6,6 +6,8 @@ import com.hinsliu.monki.common.utils.copy.CopyUtils;
 import com.hinsliu.monki.domain.model.MovieDO;
 import com.hinsliu.monki.domain.query.MovieInfoQuery;
 import com.hinsliu.monki.domain.view.MovieDTO;
+import com.hinsliu.monki.domain.view.MovieMetaDTO;
+import com.hinsliu.monki.domain.view.MusicDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
@@ -15,6 +17,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.stream.Collectors;
 
 /**
  * @author liuxuanming
@@ -46,4 +49,10 @@ public class MovieManager extends BaseManager {
         }
         return movieDO;
     }
+
+    public MovieMetaDTO getMovieMeta(MovieDO movieDO){
+        MovieDTO movieDTO = CopyUtils.MovieDOToMovieDTO(movieDO);
+        return CopyUtils.MovieDTOToMovieMetaDTO(movieDTO);
+    }
+
 }

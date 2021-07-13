@@ -34,14 +34,14 @@ public class SearchEngineController {
     @ApiOperation(value = "搜索服务，返回搜索的电影列表")
     @RequestMapping(value = "/search", method = {RequestMethod.GET})
     public RpcResult<Page<MovieMetaDTO>> search(@ModelAttribute @Validated SearchQuery query) {
-        return RpcResult.successResult(searchEngineManager.search());
+        return RpcResult.successResult(searchEngineManager.search(query));
     }
 
     @AuthToken
     @ApiOperation(value = "推荐服务，返回推荐的电影列表")
     @RequestMapping(value = "/recommend", method = {RequestMethod.GET})
     public RpcResult<Page<MovieMetaDTO>> recommend(@ModelAttribute @Validated RecommendQuery query) {
-        return RpcResult.successResult(searchEngineManager.recommend());
+        return RpcResult.successResult(searchEngineManager.recommend(query));
     }
 
 }
