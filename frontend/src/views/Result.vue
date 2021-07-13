@@ -199,6 +199,16 @@ import BScroll from '@better-scroll/core'
 import MouseWheel from '@better-scroll/mouse-wheel'
 BScroll.use(MouseWheel)
 export default {
+  data() {
+    return {
+      visible: false,
+      count: 60,
+      issend: true,
+      priority:0,
+      showLogin: window.localStorage.getItem("email"),
+      form: this.$form.createForm(this),
+    };
+  },
   name: "Result",
   components: {},
   methods: {

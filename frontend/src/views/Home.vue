@@ -7,6 +7,8 @@
       <div id="div3"><a href="https://map.baidu.com/" style="color: white">Location</a></div>
       <div id="div4"><a href="https://music.163.com/" style="color: white">Music</a></div>
       <div id="div5">More</div>
+      <div id="div6"><a href="#/search" >search</a></div>
+      <div id="div7"><a href="#/result" >result</a></div>
       <div id="div1">Login</div>
     </div>
     
@@ -273,7 +275,7 @@ filter: brightness(2.3);
   float:right;
 }
 
-#div2,#div3,#div4,#div5{
+#div2,#div3,#div4,#div5,#div6,#div7{
   float:left;
   margin-right: 1.2%;
 }
