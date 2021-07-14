@@ -5,6 +5,7 @@ import com.hinsliu.monki.common.enums.ErrorCodeEnum;
 import com.hinsliu.monki.common.exception.BusinessException;
 import com.hinsliu.monki.domain.common.RpcResult;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -34,7 +35,7 @@ public class RpcExceptionController {
     @ResponseStatus(HttpStatus.OK)
     public RpcResult<Object> handleMethodArgumentNotValidException(BindException e) {
         String bindErrMsg = e.getBindingResult().getFieldErrors().stream()
-                .map(fieldError -> fieldError.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(UtilConstant.DEFAULT_DELIMITER));
         log.error(bindErrMsg);
         return RpcResult.errorResult(ErrorCodeEnum.FAIL.getCode(), String.format("输入参数不合法-->%s", bindErrMsg));
@@ -51,7 +52,7 @@ public class RpcExceptionController {
     @ResponseStatus(HttpStatus.OK)
     public RpcResult<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         String bindErrMsg = e.getBindingResult().getFieldErrors().stream()
-                .map(fieldError -> fieldError.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(UtilConstant.DEFAULT_DELIMITER));
         log.error(bindErrMsg);
         return RpcResult.errorResult(ErrorCodeEnum.FAIL.getCode(), String.format("输入参数不合法-->%s", bindErrMsg));
