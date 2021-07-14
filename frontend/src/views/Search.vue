@@ -3,7 +3,7 @@
     <div class="head">
       <div class="left">
         <div class="searchtext" >
-          <div id="div0" @click="choosePriority('0')" ><a style="color: white" ><a-icon type="instagram" /></a></div>
+          <div id="div0" @click="choosePriority('0')"><a style="color: white" ><a-icon type="instagram" /></a></div>
           <div id="div1" @click="choosePriority('1')"><a style="color: white" >Movie</a></div>
           <div id="div2" @click="choosePriority('2')"><a style="color: white">Location</a></div>
           <div id="div3" @click="choosePriority('3')"><a style="color: white" >Music</a></div>
@@ -125,7 +125,7 @@
       </a-modal>
       </div>
       <div class="resultItems">
-        <div class="card" v-for="(item, i) in test" :key=i>
+        <div class="card" v-for="(item, i) in test" :key=i onmouseover="changebackground()">
           <div class="post">
             <img
               slot="cover"
@@ -296,7 +296,9 @@ export default {
         }
       });
     },
-
+    changebackground(){
+      alert("hahah");
+    },
     checkEmail (rule, value, callback) {
       const regex = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/
       if (!regex.test(value)) {
@@ -566,7 +568,7 @@ div /deep/ .ant-modal-body{
     border-radius: 20px;
     box-shadow: 0px 2px 9px 5px rgba(0, 0, 0, 0.4);
     z-index: 100;
-    background: url("../assets/monki.png") no-repeat;
+    background-image: url("../assets/monki.png");
     background-size: cover;
     background-position: center center;
     background-color: rgba(0,139,139, 0.6);
