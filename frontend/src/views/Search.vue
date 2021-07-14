@@ -129,7 +129,7 @@
       </a-modal>
       </div>
       <!-- 搜索结果 -->
-      <div class="resultItems">
+      <div class="resultItems" v-if="loading == false">
         <!-- 卡片 -->
         <!-- 这个onmouseover前面加一个冒号就可以了，但是我不知道是实现什么功能的，而且已进入界面就冒出十几个alert -->
         <div class="card" v-for="(item, i) in test" :key=i onmouseover="changebackground()">
@@ -158,7 +158,7 @@
         </div>
       </div>
       <!-- 右侧热搜 -->
-      <div class="hotItems">
+      <div class="hotItems" v-if="loading == false">
         <div class="list">
           <div class="hotTitle" style="text-align:center;margin-top:20px;font-size:30px;color:#00FFFF">Monki Top Search</div>
           <div class="hotItem" style="margin-left:30px;padding-top:20px;margin-right:30px;overflow:hidden;white-space:nowrap" v-for="(item, k) in test2" :key=k
@@ -372,8 +372,9 @@ export default {
     onChange(pageNumber) {
       console.log('Page: ', pageNumber);
       this.loading = true
+      console.log(this.loading)
       // TODO: 获取简略信息的接口的测试
-      this.$axios.get('/api/app/engine/search',{
+      this.axios.get('/api/app/engine/search',{
         headers:{
           'token':this.$store.state.user.id
         },
@@ -385,6 +386,7 @@ export default {
         }
       }).then((res)=>{
         this.loading = false
+        console.log(this.loading)
         console.log(res.data)
         if(res.data.success == true){
           this.test = res.data.data.results
@@ -409,7 +411,7 @@ export default {
     getTop()
     {
       // TODO: 获取热搜榜的接口的测试
-      this.$axios.get('/api/app/engine/recommend',{
+      this.axios.get('/api/app/engine/recommend',{
         headers:{
           'token':this.$store.state.user.id
         },
@@ -445,6 +447,7 @@ export default {
     console.log(this.$store.state.user.email)
     console.log(this.$store.state.search.search)
     console.log(this.$store.state.search.priority)
+    console.log(this.loading)
     this.getTop()
     this.onChange(1)
   },
