@@ -2,6 +2,7 @@
   <div class="result" style="minHeight: calc(100vh)">
     <div class="head">
       <div class="left">
+        <!-- 点击优先级 -->
         <div class="searchtext" >
           <div id="div0" @click="choosePriority('0')"><a style="color: white" ><a-icon type="instagram" /></a></div>
           <div id="div1" @click="choosePriority('1')"><a style="color: white" >Movie</a></div>
@@ -9,6 +10,7 @@
           <div id="div3" @click="choosePriority('3')"><a style="color: white" >Music</a></div>
         </div>
         <br>
+        <!-- 搜索框 -->
         <a-input-search
           class="input-box"
           placeholder="Please Input Search Text"
@@ -20,6 +22,7 @@
       </div>
       <div class="right">
         <a-row>
+          <!-- 返回主页 -->
           <a-col :span="12">
             <a-icon
               type="home"
@@ -28,6 +31,7 @@
               @click="goTo('/home')"
             />
           </a-col>
+          <!-- 登录登出 -->
           <a-col :span="12">
             <a-icon
               type="user"
@@ -124,7 +128,10 @@
         </a-form>
       </a-modal>
       </div>
+      <!-- 搜索结果 -->
       <div class="resultItems">
+        <!-- 卡片 -->
+        <!-- 这个onmouseover前面加一个冒号就可以了，但是我不知道是实现什么功能的，而且已进入界面就冒出十几个alert -->
         <div class="card" v-for="(item, i) in test" :key=i onmouseover="changebackground()">
           <div class="post">
             <img
@@ -144,11 +151,13 @@
             <div class="location">Locations: <a style="color: aqua;opacity:0.6;padding-right:10px" v-for="(ty,j) in item.visit" :key=j>{{ty}}</a></div>
           </div>
         </div>
+        <!-- 分页 -->
         <div style="text-align:center;padding-top:20px" ref="pagination">
         <a-pagination show-quick-jumper :default-current="this.ipagination.current" :total="this.ipagination.total" :pageSize="this.ipagination.pageSize" @change="onChange"
         :getContainer='()=>$refs.pagination' />
         </div>
       </div>
+      <!-- 右侧热搜 -->
       <div class="hotItems">
         <div class="list">
           <div class="hotTitle" style="text-align:center;margin-top:20px;font-size:30px;color:#00FFFF">Monki Top Search</div>
@@ -165,6 +174,7 @@
 
 
 <script>
+// 测试数据
 var test=[]
 var test1={
   "id":"233",
@@ -186,20 +196,22 @@ for(let i =0;i<test2.length;i++)
 {
   test2[i].name = String(i+1)+ ". "+ test2[i].name
 }
+
 export default {
   data() {
     return {
-      loading:false,
+      loading:false, 
       visible_login: false,
       visible_logout:false,
-      count: 60,
+      count: 60,//重新发送验证码等待时间
       issend: true,
-      priority:this.$store.state.search.priority,
-      text:this.$store.state.search.search,
-      test,
-      test2,
+      priority:this.$store.state.search.priority,//选择的优先级
+      text:this.$store.state.search.search,//搜索框的内容
+      test,//搜索结果数据
+      test2,//热搜数据
       isLogin: this.$store.state.user.email,
       form: this.$form.createForm(this),
+      //分页相关信息
       ipagination:{
         current:1,
         pageSize:10,
@@ -232,6 +244,7 @@ export default {
     logoutNo(){
       this.visible_logout = false
     },
+    //选择优先级，包括点击时的样式修改
     choosePriority(num){
       console.log(num)
       if(num==0){
@@ -266,6 +279,7 @@ export default {
       }
       console.log(this.priority)
     },
+    //优先级归零，即随意搜索，样式归零
     divInit(){
         document.getElementById('div1').style.fontSize="20px";
         document.getElementById('div2').style.fontSize="20px";
@@ -354,6 +368,7 @@ export default {
         }
       })
     },
+    //获取数据接口，第一次进入该页面mounted的时候页数是1，其他时候点击分页的时候会获取页码
     onChange(pageNumber) {
       console.log('Page: ', pageNumber);
       this.loading = true
@@ -381,6 +396,7 @@ export default {
             console.log(error)
         })
     },
+    //结果搜索，实际上并没有接口，而是将搜索内容保存并重新进入、加载本界面，使界面mounted的时候调用onChange接口
     onSearch(){
       this.$store.commit('setSearch',this.text)
       console.log(this.text)
@@ -389,6 +405,7 @@ export default {
       this.ipagination.current = 1
       location.reload()
     },
+    //进入该界面的时候就调用该接口获得热搜榜
     getTop()
     {
       // TODO: 获取热搜榜的接口的测试
@@ -416,6 +433,7 @@ export default {
             console.log(error)
         })
     },
+    //点击榜单的内容跳转到对应的详情界面，详情界面的加载逻辑，也是获取全局state的movieId，然后一进入页面mounted再调用接口
     clickTop(id)
     {
       this.$store.commit('setMovieId',id)
