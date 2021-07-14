@@ -138,10 +138,10 @@
             <div class="moviename">{{item.name}}</div>
             <div class="rating">Rating: <a style="color: aqua;opacity:0.6;padding-right:10px">{{item.rating}}</a></div>
             <div class="year">Year: <a style="color: aqua;opacity:0.6;padding-right:10px">{{item.rating}}</a></div>
-            <div class="type">Type: <a style="color: aqua;opacity:0.6;padding-right:10px" v-for="(ty,j) in item.type" :key=j>{{ty}}</a></div>
+            <div class="type">Type: <a style="color: aqua;opacity:0.6;padding-right:10px" v-for="(ty,j) in item.genre" :key=j>{{ty}}</a></div>
             <div class="director">Director:  <a style="color: aqua;opacity:0.6;padding-right:10px">{{item.rating}}</a></div>
             <div class="music">Musics:  <a style="color: aqua;opacity:0.6;padding-right:10px;" v-for="(ty,j) in item.music" :key=j>{{ty}}</a></div>
-            <div class="location">Locations: <a style="color: aqua;opacity:0.6;padding-right:10px" v-for="(ty,j) in item.location" :key=j>{{ty}}</a></div>
+            <div class="location">Locations: <a style="color: aqua;opacity:0.6;padding-right:10px" v-for="(ty,j) in item.visit" :key=j>{{ty}}</a></div>
           </div>
         </div>
         <div style="text-align:center;padding-top:20px" ref="pagination">
@@ -151,7 +151,10 @@
       </div>
       <div class="hotItems">
         <div class="list">
-          <div class="hotTitle" style="text-align:center;margin-top:20px">Monki Hot Search</div>
+          <div class="hotTitle" style="text-align:center;margin-top:20px;font-size:30px;color:#00FFFF">Monki Top Search</div>
+          <div class="hotItem" style="margin-left:30px;padding-top:20px;margin-right:30px;overflow:hidden;white-space:nowrap" v-for="(item, k) in test2" :key=k
+            @click="clickTop(item.id)">
+          {{item.name}}</div>
         </div>
       </div>
       <a-back-top />
@@ -164,30 +167,37 @@
 <script>
 var test=[]
 var test1={
+  "id":"233",
   "post":"https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
   "name":"!MovieName!",
   "rating":"9.99",
   "year":"1999",
-  "type":['Action','Amour'],
+  "genre":['Action','Amour'],
   "director":"Alan Walker",
   "music":['music1','music2333333333333333333333333333333333333333333333333333333333333333333333333'],
-  "location":['Hz','Sh'],
+  "visit":['Hz','Sh'],
 }
 for(let i=0;i<=9;i++)
 {
   test.push(test1)
 }
-
+var test2=JSON.parse(JSON.stringify(test))
+for(let i =0;i<test2.length;i++)
+{
+  test2[i].name = String(i+1)+ ". "+ test2[i].name
+}
 export default {
   data() {
     return {
+      loading:false,
       visible_login: false,
       visible_logout:false,
       count: 60,
       issend: true,
-      priority:0,
+      priority:this.$store.state.search.priority,
       text:this.$store.state.search.search,
       test,
+      test2,
       isLogin: this.$store.state.user.email,
       form: this.$form.createForm(this),
       ipagination:{
@@ -233,6 +243,7 @@ export default {
         document.getElementById('div0').style.marginTop="10px";
         document.getElementById('div2').style.marginTop="10px";
         document.getElementById('div3').style.marginTop="10px";
+        this.$store.commit('setPriority',1)
         this.priority=1
       }
       else if(num == 2){
@@ -241,6 +252,7 @@ export default {
         document.getElementById('div0').style.marginTop="10px";
         document.getElementById('div1').style.marginTop="10px";
         document.getElementById('div3').style.marginTop="10px";
+        this.$store.commit('setPriority',2)
         this.priority=2
       }
       else if(num == 3){
@@ -249,6 +261,7 @@ export default {
         document.getElementById('div0').style.marginTop="10px";
         document.getElementById('div2').style.marginTop="10px";
         document.getElementById('div1').style.marginTop="10px";
+        this.$store.commit('setPriority',3)
         this.priority=3
       }
       console.log(this.priority)
@@ -261,6 +274,7 @@ export default {
         document.getElementById('div2').style.marginTop="0px";
         document.getElementById('div3').style.marginTop="0px";
         document.getElementById('div0').style.marginTop="0px";
+        this.$store.commit('setPriority',0)
         this.priority=0
     },
     sendcode() {
@@ -296,7 +310,6 @@ export default {
         }
       });
     },
-
     checkEmail (rule, value, callback) {
       const regex = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/
       if (!regex.test(value)) {
@@ -304,7 +317,6 @@ export default {
       }
       callback()
     },
-
     handleSubmit (e) {
       e.preventDefault()
       const {
@@ -341,24 +353,79 @@ export default {
     },
     onChange(pageNumber) {
       console.log('Page: ', pageNumber);
+      this.loading = true
+      // TODO: 获取简略信息的接口的测试
+      this.$axios.get('/api/app/engine/search',{
+        headers:{
+          'token':this.$store.state.user.id
+        },
+        params:{
+          'keyword':this.$store.state.search.search,
+          'page':pageNumber,
+          'pageSize':this.ipagination.pageSize,
+          'type':this.$store.state.search.priority,
+        }
+      }).then((res)=>{
+        this.loading = false
+        console.log(res.data)
+        if(res.data.success == true){
+          this.test = res.data.data.results
+        }
+        else{
+          window.alert(res.data.message)
+        }
+      }).catch(function (error) {
+            console.log(error)
+        })
     },
     onSearch(){
       this.$store.commit('setSearch',this.text)
       console.log(this.text)
       console.log(this.$store.state.search.search)
       this.$router.push('/search')
+      this.ipagination.current = 1
       location.reload()
     },
-    getList()
+    getTop()
     {
-      // TODO:
+      // TODO: 获取热搜榜的接口的测试
+      this.$axios.get('/api/app/engine/recommend',{
+        headers:{
+          'token':this.$store.state.user.id
+        },
+        params:{
+          'page':1,
+          'pageSize':10,
+        }
+      }).then((res)=>{
+        console.log(res.data)
+        if(res.data.success == true){
+          this.test2 = res.data.data.results
+          for(let i =0;i<this.test2.length;i++){
+            this.test2[i].name = String(i+1)+ ". "+ this.test2[i].name
+          }
+        }
+        else{
+          window.alert(res.data.message)
+          console.log(res.data.message)
+        }
+      }).catch(function (error) {
+            console.log(error)
+        })
+    },
+    clickTop(id)
+    {
+      this.$store.commit('setMovieId',id)
+      this.$router.push('/result')
     }
   },
   mounted() {
     console.log(this.$store.state.user.id)
     console.log(this.$store.state.user.email)
     console.log(this.$store.state.search.search)
-    this.getList()
+    console.log(this.$store.state.search.priority)
+    this.getTop()
+    this.onChange(1)
   },
 };
 </script>
@@ -560,7 +627,7 @@ div /deep/ .ant-modal-body{
     margin-top:150px;
     top: 0;
     width: 367px;
-    height: 430px;
+    height: 460px;
     line-height: 20px;
     opacity: 0.8;
     border-radius: 20px;
@@ -574,6 +641,10 @@ div /deep/ .ant-modal-body{
 }
 .list:hover{
   opacity: 1;
+}
+.hotItem:hover{
+  transform: scale(1.03);
+  color: #00FFFF;
 }
 
 /* 分页的输入框 */
