@@ -120,17 +120,14 @@
   </div>
 
     <div class="wrapper">
-    <div class="mouse-wheel-wrapper" ref="scroll" v-if="loading == false">
+    <div class="mouse-wheel-wrapper" ref="scroll">
       <div class="mouse-wheel-content">
-        <div class="mouse-wheel-item" v-for="(item, i) in test" :key=i :style="Getmoviestyle(item, i)">
+        <div class="mouse-wheel-item" v-for="(item, i) in test" :key=i :style="Getmoviestyle(item, i)" @click="clickTop(item.id)">
         <div class="Moviename">
           {{item.name}}
         </div>
         </div>
       </div>
-    </div>
-    <div class = "waiting" v-else>
-      iamloading
     </div>
   </div>
   </div>
@@ -404,6 +401,11 @@ export default {
             console.log(error)
         })
     },
+    clickTop(id)
+    {
+      this.$store.commit('setMovieId',id)
+      this.$router.push('/result')
+    }
   },
   mounted(){
     this.init();

@@ -8,7 +8,7 @@ import VueAxios from 'vue-axios'
 import anime from 'animejs'
 
 Vue.use(VueAxios,axios)
-Vue.use(anime)
+Vue.prototype.$anime = anime
 Vue.config.productionTip = false
 
 new Vue({
