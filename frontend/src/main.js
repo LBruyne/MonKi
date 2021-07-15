@@ -5,8 +5,10 @@ import store from './store'
 import './plugins/ant-design-vue'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import anime from 'animejs'
 
 Vue.use(VueAxios,axios)
+Vue.use(anime)
 Vue.config.productionTip = false
 
 new Vue({
