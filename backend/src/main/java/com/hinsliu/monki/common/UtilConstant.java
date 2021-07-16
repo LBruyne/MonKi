@@ -16,7 +16,7 @@ public class UtilConstant {
     public static final String DEFAULT_DELIMITER = ";";
 
     // 分页查询系统最大页大小
-    public static final Integer MAX_PAGE_SIZE = 100;
+    public static final Integer MAX_PAGE_SIZE = 50;
 
     // 分页查询系统默认页大小
     public static final Integer DEFAULT_PAGE_SIZE = 10;

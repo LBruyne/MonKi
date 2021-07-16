@@ -1,5 +1,7 @@
 package com.hinsliu.monki.service;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.hinsliu.monki.common.enums.ErrorCodeEnum;
 import com.hinsliu.monki.common.enums.SearchTypeEnum;
 import com.hinsliu.monki.common.exception.BusinessException;
@@ -11,13 +13,21 @@ import com.hinsliu.monki.domain.model.SearchActionDO;
 import com.hinsliu.monki.domain.query.RecommendQuery;
 import com.hinsliu.monki.domain.query.SearchQuery;
 import com.hinsliu.monki.domain.view.MovieMetaDTO;
+import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.util.EntityUtils;
+import org.elasticsearch.client.Request;
+import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +40,20 @@ import java.util.stream.Collectors;
 @Service
 public class SearchEngineManager extends BaseManager {
 
+    private static final Double NAME_BOOST = 0.25;
+
+    private static final Double VISITS_BOOST = 0.25;
+
+    private static final Double MUSICS_BOOST = 0.25;
+
+    private static final Double SPECIFIED_BOOST = 1.0;
+
+    private static final Double RATING_FACTOR = 0.1;
+
+    private static final Double POPULARITY_FACTOR = 0.1;
+
+    private static final String POPULARITY_MODIFIER = "log1p";
+
     @Autowired
     private RestHighLevelClient highLevelClient;
 
@@ -38,6 +62,10 @@ public class SearchEngineManager extends BaseManager {
 
     @Resource
     private SearchActionDao searchActionDao;
+
+    private static final String METHOD = "GET";
+
+    private static final String ENDPOINT = "/monki/_search";
 
     public Page<MovieMetaDTO> search(SearchQuery query) {
         // 分页验证
@@ -86,7 +114,94 @@ public class SearchEngineManager extends BaseManager {
     }
 
     public SearchResult searchES(String kw, SearchTypeEnum type, Integer from, Integer size) {
-        return null;
+        List<String> results = new ArrayList<>();
+        Integer count = 0;
+
+        // 构建请求体
+        Request request = new Request(METHOD, ENDPOINT);
+        JSONObject body = new JSONObject();
+
+        // 加入查询部分
+        addRequestBody(body, kw, type, from, size);
+
+        // 设置请求体
+        request.setJsonEntity(body.toJSONString());
+
+        try {
+            // 发送请求并得到搜索结果
+            Response response = highLevelClient.getLowLevelClient().performRequest(request);
+
+            // 得到搜索结果
+            JSONObject jsonObject = JSONObject.parseObject(EntityUtils.toString(response.getEntity()));
+
+            // 解析得到每个搜索结果单项
+            JSONArray items = jsonObject.getJSONObject("hits").getJSONArray("hits");
+            for (int i = 0; i < items.size(); i++) {
+                JSONObject item = items.getJSONObject(i).getJSONObject("_source");
+                String id = item.get("id").toString();
+                results.add(id);
+            }
+
+            // 得到总数量
+            count = jsonObject.getJSONObject("hits").getJSONObject("total").getInteger("value");
+
+        } catch (IOException e) {
+            log.warn("发送ES查找请求失败");
+            log.warn(e.getMessage(), e);
+        }
+
+        return SearchResult.builder()
+                .results(results)
+                .count(count)
+                .build();
+    }
+
+    private void addRequestBody(JSONObject body, String kw, SearchTypeEnum type, Integer from, Integer size) {
+        Double nameBst = NAME_BOOST, visitBst = VISITS_BOOST, musicBst = MUSICS_BOOST;
+
+        // 获取加权
+        if (type == SearchTypeEnum.MOVIE) {
+            nameBst = SPECIFIED_BOOST;
+        } else if (type == SearchTypeEnum.LOCATION) {
+            visitBst = SPECIFIED_BOOST;
+        } else if (type == SearchTypeEnum.MUSIC) {
+            musicBst = SPECIFIED_BOOST;
+        }
+
+        // source
+        body.put("_source", "id");
+
+        // from
+        body.put("from", from);
+
+        // size
+        body.put("size", size);
+
+        // query
+        body.put("query", new JSONObject());
+        body.getJSONObject("query").put("function_score", new JSONObject());
+        body.getJSONObject("query").getJSONObject("function_score").put("query", new JSONObject());
+        body.getJSONObject("query").getJSONObject("function_score").getJSONObject("query").put("bool", new JSONObject());
+        body.getJSONObject("query").getJSONObject("function_score").getJSONObject("query").getJSONObject("bool").put("should", new JSONArray());
+        JSONObject name = new JSONObject().fluentPut("match", new JSONObject().fluentPut("name", new JSONObject().fluentPut("query", kw).fluentPut("fuzziness", "AUTO").fluentPut("boost", nameBst)));
+        JSONObject visits = new JSONObject().fluentPut("match", new JSONObject().fluentPut("visits", new JSONObject().fluentPut("query", kw).fluentPut("fuzziness", "AUTO").fluentPut("boost", visitBst)));
+        JSONObject musics = new JSONObject().fluentPut("match", new JSONObject().fluentPut("musics", new JSONObject().fluentPut("query", kw).fluentPut("fuzziness", "AUTO").fluentPut("boost", musicBst)));
+        body.getJSONObject("query").getJSONObject("function_score").getJSONObject("query").getJSONObject("bool").getJSONArray("should").fluentAdd(name).fluentAdd(visits).fluentAdd(musics);
+
+        body.getJSONObject("query").getJSONObject("function_score").put("functions", new JSONArray());
+        JSONObject rating = new JSONObject().fluentPut("field_value_factor", new JSONObject().fluentPut("field", "rating").fluentPut("factor", RATING_FACTOR));
+        JSONObject popularity = new JSONObject().fluentPut("field_value_factor", new JSONObject().fluentPut("field", "popularity").fluentPut("factor", POPULARITY_FACTOR).fluentPut("modifier", POPULARITY_MODIFIER));
+        body.getJSONObject("query").getJSONObject("function_score").getJSONArray("functions").fluentAdd(rating).fluentAdd(popularity);
+
+        body.getJSONObject("query").getJSONObject("function_score").put("score_mode", "sum");
+
+        body.getJSONObject("query").getJSONObject("function_score").put("boost_mode", "multiply");
+
+        // sort
+        body.put("sort", new JSONArray());
+        body.getJSONArray("sort").add(new JSONObject());
+        body.getJSONArray("sort").getJSONObject(0).put("_score", new JSONObject());
+        body.getJSONArray("sort").getJSONObject(0).getJSONObject("_score").put("order", "desc");
     }
 
     public List<MovieMetaDTO> searchMongo(List<String> ids) {
@@ -94,6 +209,7 @@ public class SearchEngineManager extends BaseManager {
     }
 
     @Data
+    @Builder
     private static class SearchResult {
 
         private List<String> results;

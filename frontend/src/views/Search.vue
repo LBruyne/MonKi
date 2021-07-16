@@ -2,13 +2,15 @@
   <div class="result" style="minHeight: calc(100vh)">
     <div class="head">
       <div class="left">
+        <!-- 点击优先级 -->
         <div class="searchtext" >
-          <div id="div0" @click="choosePriority('0')" ><a style="color: white" ><a-icon type="instagram" /></a></div>
+          <div id="div0" @click="choosePriority('0')"><a style="color: white" ><a-icon type="instagram" /></a></div>
           <div id="div1" @click="choosePriority('1')"><a style="color: white" >Movie</a></div>
           <div id="div2" @click="choosePriority('2')"><a style="color: white">Location</a></div>
           <div id="div3" @click="choosePriority('3')"><a style="color: white" >Music</a></div>
         </div>
         <br>
+        <!-- 搜索框 -->
         <a-input-search
           class="input-box"
           placeholder="Please Input Search Text"
@@ -20,6 +22,7 @@
       </div>
       <div class="right">
         <a-row>
+          <!-- 返回主页 -->
           <a-col :span="12">
             <a-icon
               type="home"
@@ -28,6 +31,7 @@
               @click="goTo('/home')"
             />
           </a-col>
+          <!-- 登录登出 -->
           <a-col :span="12">
             <a-icon
               type="user"
@@ -124,8 +128,11 @@
         </a-form>
       </a-modal>
       </div>
-      <div class="resultItems">
-        <div class="card" v-for="(item, i) in test" :key=i>
+      <!-- 搜索结果 -->
+      <div class="resultItems" v-if="loading == false">
+        <!-- 卡片 -->
+        <!-- 这个onmouseover前面加一个冒号就可以了，但是我不知道是实现什么功能的，而且已进入界面就冒出十几个alert -->
+        <div class="card" v-for="(item, i) in test" :key=i onmouseover="changebackground()">
           <div class="post">
             <img
               slot="cover"
@@ -138,20 +145,39 @@
             <div class="moviename">{{item.name}}</div>
             <div class="rating">Rating: <a style="color: aqua;opacity:0.6;padding-right:10px">{{item.rating}}</a></div>
             <div class="year">Year: <a style="color: aqua;opacity:0.6;padding-right:10px">{{item.rating}}</a></div>
-            <div class="type">Type: <a style="color: aqua;opacity:0.6;padding-right:10px" v-for="(ty,j) in item.type" :key=j>{{ty}}</a></div>
+            <div class="type">Type: <a style="color: aqua;opacity:0.6;padding-right:10px" v-for="(ty,j) in item.genre" :key=j>{{ty}}</a></div>
             <div class="director">Director:  <a style="color: aqua;opacity:0.6;padding-right:10px">{{item.rating}}</a></div>
             <div class="music">Musics:  <a style="color: aqua;opacity:0.6;padding-right:10px;" v-for="(ty,j) in item.music" :key=j>{{ty}}</a></div>
-            <div class="location">Locations: <a style="color: aqua;opacity:0.6;padding-right:10px" v-for="(ty,j) in item.location" :key=j>{{ty}}</a></div>
+            <div class="location">Locations: <a style="color: aqua;opacity:0.6;padding-right:10px" v-for="(ty,j) in item.visit" :key=j>{{ty}}</a></div>
           </div>
         </div>
+        <!-- 分页 -->
         <div style="text-align:center;padding-top:20px" ref="pagination">
         <a-pagination show-quick-jumper :default-current="this.ipagination.current" :total="this.ipagination.total" :pageSize="this.ipagination.pageSize" @change="onChange"
         :getContainer='()=>$refs.pagination' />
         </div>
       </div>
-      <div class="hotItems">
+      <!-- 小小动画 -->
+      <div class="resultItems2" v-if="loading == true">
+        <div class="person">
+          <div class="person_head"></div>
+          <div class="person_body">
+            <div class="hand1"></div>
+            <div class="hand2"></div>
+          </div>
+          <div class="leg">
+            <div class="leg_left"></div>
+            <div class="leg_right"></div>
+          </div>
+        </div>
+      </div>
+      <!-- 右侧热搜 -->
+      <div class="hotItems" v-if="loading == false">
         <div class="list">
-          <div class="hotTitle" style="text-align:center;margin-top:20px">Monki Hot Search</div>
+          <div class="hotTitle" style="text-align:center;margin-top:20px;font-size:30px;color:#00FFFF">Monki Top Search</div>
+          <div class="hotItem" style="margin-left:30px;padding-top:20px;margin-right:30px;overflow:hidden;white-space:nowrap" v-for="(item, k) in test2" :key=k
+            @click="clickTop(item.id)">
+          {{item.name}}</div>
         </div>
       </div>
       <a-back-top />
@@ -162,34 +188,44 @@
 
 
 <script>
+// 测试数据
 var test=[]
 var test1={
+  "id":"233",
   "post":"https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
   "name":"!MovieName!",
   "rating":"9.99",
   "year":"1999",
-  "type":['Action','Amour'],
+  "genre":['Action','Amour'],
   "director":"Alan Walker",
   "music":['music1','music2333333333333333333333333333333333333333333333333333333333333333333333333'],
-  "location":['Hz','Sh'],
+  "visit":['Hz','Sh'],
 }
 for(let i=0;i<=9;i++)
 {
   test.push(test1)
 }
+var test2=JSON.parse(JSON.stringify(test))
+for(let i =0;i<test2.length;i++)
+{
+  test2[i].name = String(i+1)+ ". "+ test2[i].name
+}
 
 export default {
   data() {
     return {
+      loading:true, 
       visible_login: false,
       visible_logout:false,
-      count: 60,
+      count: 60,//重新发送验证码等待时间
       issend: true,
-      priority:0,
-      text:this.$store.state.search.search,
-      test,
+      priority:this.$store.state.search.priority,//选择的优先级
+      text:this.$store.state.search.search,//搜索框的内容
+      test,//搜索结果数据
+      test2,//热搜数据
       isLogin: this.$store.state.user.email,
       form: this.$form.createForm(this),
+      //分页相关信息
       ipagination:{
         current:1,
         pageSize:10,
@@ -222,6 +258,7 @@ export default {
     logoutNo(){
       this.visible_logout = false
     },
+    //选择优先级，包括点击时的样式修改
     choosePriority(num){
       console.log(num)
       if(num==0){
@@ -233,6 +270,7 @@ export default {
         document.getElementById('div0').style.marginTop="10px";
         document.getElementById('div2').style.marginTop="10px";
         document.getElementById('div3').style.marginTop="10px";
+        this.$store.commit('setPriority',1)
         this.priority=1
       }
       else if(num == 2){
@@ -241,6 +279,7 @@ export default {
         document.getElementById('div0').style.marginTop="10px";
         document.getElementById('div1').style.marginTop="10px";
         document.getElementById('div3').style.marginTop="10px";
+        this.$store.commit('setPriority',2)
         this.priority=2
       }
       else if(num == 3){
@@ -249,10 +288,12 @@ export default {
         document.getElementById('div0').style.marginTop="10px";
         document.getElementById('div2').style.marginTop="10px";
         document.getElementById('div1').style.marginTop="10px";
+        this.$store.commit('setPriority',3)
         this.priority=3
       }
       console.log(this.priority)
     },
+    //优先级归零，即随意搜索，样式归零
     divInit(){
         document.getElementById('div1').style.fontSize="20px";
         document.getElementById('div2').style.fontSize="20px";
@@ -261,6 +302,7 @@ export default {
         document.getElementById('div2').style.marginTop="0px";
         document.getElementById('div3').style.marginTop="0px";
         document.getElementById('div0').style.marginTop="0px";
+        this.$store.commit('setPriority',0)
         this.priority=0
     },
     sendcode() {
@@ -296,7 +338,9 @@ export default {
         }
       });
     },
-
+    changebackground(){
+      alert("hahah");
+    },
     checkEmail (rule, value, callback) {
       const regex = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/
       if (!regex.test(value)) {
@@ -304,7 +348,6 @@ export default {
       }
       callback()
     },
-
     handleSubmit (e) {
       e.preventDefault()
       const {
@@ -339,26 +382,104 @@ export default {
         }
       })
     },
+    //获取数据接口，第一次进入该页面mounted的时候页数是1，其他时候点击分页的时候会获取页码
     onChange(pageNumber) {
       console.log('Page: ', pageNumber);
+      this.loading = true
+      console.log(this.loading)
+      // TODO: 获取简略信息的接口的测试
+      this.axios.get('/api/app/engine/search',{
+        headers:{
+          'token':this.$store.state.user.id
+        },
+        params:{
+          'keyword':this.$store.state.search.search,
+          'page':pageNumber,
+          'pageSize':this.ipagination.pageSize,
+          'type':this.$store.state.search.priority,
+        }
+      }).then((res)=>{
+        this.loading = false
+        console.log(this.loading)
+        console.log(res.data)
+        if(res.data.success == true){
+          this.test = res.data.data.results
+        }
+        else{
+          window.alert(res.data.message)
+        }
+      }).catch(function (error) {
+            console.log(error)
+        })
     },
+    //结果搜索，实际上并没有接口，而是将搜索内容保存并重新进入、加载本界面，使界面mounted的时候调用onChange接口
     onSearch(){
       this.$store.commit('setSearch',this.text)
       console.log(this.text)
       console.log(this.$store.state.search.search)
       this.$router.push('/search')
+      this.ipagination.current = 1
       location.reload()
     },
-    getList()
+    //进入该界面的时候就调用该接口获得热搜榜
+    getTop()
     {
-      // TODO:
-    }
+      // TODO: 获取热搜榜的接口的测试
+      this.axios.get('/api/app/engine/recommend',{
+        headers:{
+          'token':this.$store.state.user.id
+        },
+        params:{
+          'page':1,
+          'pageSize':10,
+        }
+      }).then((res)=>{
+        console.log(res.data)
+        if(res.data.success == true){
+          this.test2 = res.data.data.results
+          for(let i =0;i<this.test2.length;i++){
+            this.test2[i].name = String(i+1)+ ". "+ this.test2[i].name
+          }
+        }
+        else{
+          window.alert(res.data.message)
+          console.log(res.data.message)
+        }
+      }).catch(function (error) {
+            console.log(error)
+        })
+    },
+    //点击榜单的内容跳转到对应的详情界面，详情界面的加载逻辑，也是获取全局state的movieId，然后一进入页面mounted再调用接口
+    clickTop(id)
+    {
+      this.$store.commit('setMovieId',id)
+      this.$router.push('/result')
+    },
+    play() {
+      this.$anime
+        .timeline({
+          easing: "easeInOutQuad", //动画速率
+          direction: "alternate", //返回执行
+          duration: 300, //动画时间
+          loop: true, //执行次数 true 为无限次
+        })
+        .add({ targets: ".person", rotate: [10, 20] }, 0) //身体是否倾斜
+        .add({ targets: ".hand1", rotate: [80, -50] }, 0) //左手晃动幅度
+        .add({ targets: ".hand2", rotate: [-50, 80] }, 0) //右手晃动幅度
+        .add({ targets: ".leg .leg_left", rotate: [30, -60] }, 0) //左脚晃动幅度
+        .add({ targets: ".leg .leg_right", rotate: [-60, 30] }, 0); //右脚晃动幅度
+    },
   },
   mounted() {
     console.log(this.$store.state.user.id)
     console.log(this.$store.state.user.email)
     console.log(this.$store.state.search.search)
-    this.getList()
+    console.log(this.$store.state.search.priority)
+    console.log(this.loading)
+    setTimeout(this.getTop(),1000)
+    setTimeout(this.onChange(1),1000)
+    setTimeout(this.play(),1)
+    
   },
 };
 </script>
@@ -560,13 +681,13 @@ div /deep/ .ant-modal-body{
     margin-top:150px;
     top: 0;
     width: 367px;
-    height: 430px;
+    height: 460px;
     line-height: 20px;
     opacity: 0.8;
     border-radius: 20px;
     box-shadow: 0px 2px 9px 5px rgba(0, 0, 0, 0.4);
     z-index: 100;
-    background: url("../assets/monki.png") no-repeat;
+    background-image: url("../assets/monki.png");
     background-size: cover;
     background-position: center center;
     background-color: rgba(0,139,139, 0.6);
@@ -574,6 +695,10 @@ div /deep/ .ant-modal-body{
 }
 .list:hover{
   opacity: 1;
+}
+.hotItem:hover{
+  transform: scale(1.03);
+  color: #00FFFF;
 }
 
 /* 分页的输入框 */
@@ -609,5 +734,126 @@ div /deep/ .ant-pagination-jump-prev .ant-pagination-item-container .ant-paginat
 }
 div /deep/ .ant-pagination-jump-next .ant-pagination-item-container .ant-pagination-item-ellipsis{
   color:aliceblue;
+}
+
+
+.resultItems2{
+  float:left;
+  width:70%;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: top;
+  margin-top:150px
+}
+.person {
+  transform-origin: 1% 2%;
+  margin: 0 auto;
+}
+
+.person_head {
+  width: 20px;
+  height: 20px;
+  background: aliceblue;
+  border-radius: 50%;
+}
+.person_body {
+  width: 22px;
+  height: 50px;
+  border-radius: 20px;
+  background: aliceblue;
+  margin-top: 2px;
+  position: relative;
+}
+.hand1 {
+  position: absolute;
+  width: 10px;
+  height: 25px;
+  left: calc(50% - 5px);
+  top: 7px;
+  border-radius: 10px;
+  background: aliceblue;
+  transform-origin: 50% 0;
+}
+.hand1::after {
+  content: "";
+  width: 10px;
+  height: 25px;
+  border-radius: 10px;
+  background: aliceblue;
+  position: absolute;
+  bottom: 5px;
+  left: -3px;
+  transform-origin: 50% 100%;
+  transform: rotate(130deg);
+}
+.hand2 {
+  position: absolute;
+  width: 10px;
+  height: 25px;
+  left: calc(50% - 5px);
+  top: 7px;
+  border-radius: 10px;
+  background: aliceblue;
+  transform-origin: 50% 0;
+}
+.hand2::after {
+  content: "";
+  width: 10px;
+  height: 25px;
+  border-radius: 10px;
+  background: aliceblue;
+  position: absolute;
+  bottom: 5px;
+  left: -3px;
+  transform-origin: 50% 100%;
+  transform: rotate(130deg);
+}
+.leg {
+  width: 10px;
+  position: relative;
+  top: -10px;
+}
+.leg_left {
+  width: 10px;
+  height: 30px;
+  background: aliceblue;
+  border-radius: 10px;
+  position: absolute;
+  transform-origin: 50% 0;
+}
+.leg_left::after {
+  content: "";
+  width: 10px;
+  height: 30px;
+  border-radius: 10px;
+  background: aliceblue;
+  position: absolute;
+  bottom: 5px;
+  left: 2px;
+  transform-origin: 50% 100%;
+  transform: rotate(-130deg);
+}
+.leg_right {
+  width: 10px;
+  height: 30px;
+  background: aliceblue;
+  border-radius: 10px;
+  position: absolute;
+  transform-origin: 50% 0;
+}
+.leg_right::after {
+  content: "";
+  width: 10px;
+  height: 30px;
+  border-radius: 10px;
+  background: aliceblue;
+  position: absolute;
+  bottom: 5px;
+  left: 2px;
+  transform-origin: 50% 100%;
+  transform: rotate(-130deg);
 }
 </style>

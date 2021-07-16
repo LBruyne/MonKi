@@ -28,7 +28,7 @@ public class MovieDO {
 
     private String post;
 
-    private Integer popularity;
+    private String popularity;
 
     private String description;
 

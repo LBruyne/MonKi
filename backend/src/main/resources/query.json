@@ -1,0 +1,31 @@
+{
+  "_source": ,
+  "from": 0,
+  "size": 20,
+  "query": {
+
+  }
+}
+
+{
+  "settings" : {
+    "number_of_shards" : 5,
+    "number_of_replicas" : 0
+  },
+  "mappings": {
+    "properties": {
+      "title":{"type":"text","analyzer": "english"},
+      "tagline":{"type":"text","analyzer": "english"},
+      "release_date":{"type":"date",        "format": "8yyyy/MM/dd||yyyy/M/dd||yyyy/MM/d||yyyy/M/d"},
+      "popularity":{"type":"double"},
+      "cast":{
+        "type":"object",
+        "properties":{
+          "character":{"type":"text","analyzer":"standard"},
+          "name":{"type":"text","analyzer":"standard"}
+        }
+      },
+      "overview":{"type":"text","analyzer": "english"}
+    }
+  }
+}

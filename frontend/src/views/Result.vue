@@ -1,15 +1,119 @@
 <template>
   <div class="result" style="minHeight: calc(100vh)">
+      <div class="down" :style="{ width: '1%',position: 'fixed',wordSpacing:'0',
+    marginBottom: '10px',
+    marginLeft:'92%',
+    marginTop:'550px'}">
+        <a-icon type="caret-right" :style="{ fontSize: '40px', color: '#ffffff' , marginRight: '50px' ,position:absolute }"/>
+    </div>
     <div class="content">
     <div class="moviename">
           Call me by your name
     </div>
     <div class="search">
-      <a-input-search class="input-box" placeholder="Please Input Search Text" style="width: 400px" @search="onSearch" size="small"/>
+      <a-input-search class="input-box" placeholder="Please Input Search Text" style="width: 360px" @search="onSearch" size="small"/>
     </div>
     <div id="div2"><a href="https://movie.douban.com/" style="color: white">Movie |</a></div>
     <div id="div3"><a href="https://map.baidu.com/" style="color: white">Location</a></div>
     <div id="div4"><a href="https://music.163.com/" style="color: white">Music</a></div>
+    <a-icon
+      type="user"
+      size="large"
+      id="div5"
+      class="searchtext"
+      v-if="isLogin == null"
+      @click="showLogin"
+    />
+    <h1 class="searchtext" id="div5" style="font-size:15px" @click="showLogout" v-else>
+      {{ isLogin }}
+    </h1>
+
+    <div class="body" style="minHeight:100px">
+      <!-- 登出框框 -->
+      <div ref="replayModal">
+      <a-modal v-model="visible_logout" :title="null" :footer="null" :closable="false" :getContainer='()=>$refs.replayModal'>
+        <a-icon type="question-circle" class="logouttext"/>
+        <div class="logouttext" style="text-align:center;margin-top:5%">Are you sure to Logout?</div>
+        <a-button
+              size="large"
+              type="dashed"
+              htmlType="submit"
+              class="login-input"
+              style="width:100px;margin-top:65px;opacity:30%;margin-left:150px"
+              block
+              @click="logoutNo"
+            >Cancel</a-button>
+            <a-button
+              size="large"
+              type="danger"
+              htmlType="submit"
+              class="login-input"
+              style="width:100px;opacity:50%;margin-left:10px"
+              @click="logoutYes"
+              block
+            >Yes</a-button>
+      </a-modal>
+      </div>
+      <!-- 登入框框 -->
+      <div ref="replayModal">
+      <a-modal v-model="visible_login" :title="null" :footer="null" :closable="false" :getContainer='()=>$refs.replayModal'>
+        <a-form
+          id="formLogin"
+          class="user-layout-login"
+          ref="formLogin"
+          :form="form"
+          @submit="handleSubmit"
+        >
+        <a-form-item>
+            <a-input
+              class="login-input"
+              size="large"
+              type="text"
+              placeholder="Email Address"
+              v-decorator="[
+                'email',
+                {rules: [{ required: true, message: 'Please Enter the Email Address!'}, { validator: checkEmail }], validateTrigger: 'blur'}
+              ]"
+            >
+              <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+            </a-input>
+          </a-form-item>
+          <a-form-item>
+            <a-input-search
+            class="login-input"
+              size="large"
+              type="text"
+              placeholder="ValidCode"
+              @search="sendcode"
+              v-decorator="[
+                'validcode',
+                {rules: [{ required: true, message: 'Please Enter the ValidCode!'}], validateTrigger: 'blur'}
+              ]"
+            >
+              <a-icon slot="prefix" type="key" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+               <a-button v-if="issend" type="dashed" slot="enterButton">Get ValidCode</a-button>
+               <a-button v-if="!issend" disabled slot="enterButton">After {{ count }}s can send again</a-button>
+            </a-input-search>
+          </a-form-item>
+
+            <a-form-item style="text-align:center">
+            <a-button
+              size="large"
+              type="dashed"
+              htmlType="submit"
+              class="login-input"
+              style="width:120px;"
+              block
+            >Login</a-button>
+          </a-form-item>
+        </a-form>
+      </a-modal>
+      </div>
+    </div>
+
+
+
+
       <div class="card">
       <div class="text-box">
           <br/>
@@ -20,9 +124,6 @@
           <div class="Moviedirector">Director:</div>
 </div>
     </div>
-    <div class="down" :style="{ width: '10%', marginLeft:'2%',paddingTop:'15%' }">
-        <a-icon type="chrome" spin :style="{ fontSize: '40px', color: '#ffffff' , marginRight: '50px' ,float:'left' }"/>
-    </div>
     </div>
 
 
@@ -32,6 +133,7 @@
         Music
       </div>
       
+      <div class="music">
       <div class="wrapper">
         <div class="mouse-wheel-wrapper" ref="scroll1">
           <div class="mouse-wheel-content">
@@ -52,10 +154,12 @@
             </div>
         </div>        
       </div>
+    </div>
 
       <div class="Movietext" :style="{ width: '10%', float:'right', marginTop:'10%', fontSize:'30px',color:'#ffffff'}" >
         Location
       </div>
+      <div class="picture">
       <div class="wrapper">
         <div class="mouse-wheel-wrapper" ref="scroll2">
           <div class="mouse-wheel-content">
@@ -186,7 +290,7 @@
           </div>
         </div>
       </div>
-
+      </div>
       <div :style="{backgroundColor:'#000000',height:'100px'}"></div>
     </div>
   </div>
@@ -201,12 +305,18 @@ BScroll.use(MouseWheel)
 export default {
   data() {
     return {
+      visible_login: false,
+      visible_logout:false,
+      issend: true,
+      text:this.$store.state.search.search,
+      isLogin: this.$store.state.user.email,
+      form: this.$form.createForm(this),
+      data:[],
+      loading: false,
+      busy: false,
       visible: false,
       count: 60,
-      issend: true,
       priority:0,
-      showLogin: window.localStorage.getItem("email"),
-      form: this.$form.createForm(this),
     };
   },
   name: "Result",
@@ -223,6 +333,97 @@ export default {
           mouseWheel: true
         })
       },
+      sendcode() {
+        const TIME_COUNT = 60
+        this.form.validateFields(['email'],(emailError,value)=>{
+          if(!emailError){
+            this.axios.post('/api/app/login/getVerifyCode', {
+              email: value.email,
+            })
+            .then( ()=> {
+              window.alert('The ValidCode Has Been Send, Please Check Your Email!')
+              if (!this.timer) {
+                this.count = TIME_COUNT
+                this.issend = false
+                this.timer = setInterval(() => {
+                  if (this.count > 0 && this.count <= TIME_COUNT) {
+                    this.count--;
+                  } else {
+                    this.issend = true;
+                    clearInterval(this.timer);
+                    this.timer = null;
+                  }
+                }, 1000);
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+              window.alert('ValidCode Send ERROR!')
+            });
+          }
+          else{
+            console.log('********emailError');
+          }
+        });
+      },
+
+checkEmail (rule, value, callback) {
+      const regex = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/
+      if (!regex.test(value)) {
+        callback('Please Enter the Valid Email!')
+      }
+      callback()
+    },
+
+    handleSubmit (e) {
+      e.preventDefault()
+      const {
+        form: { validateFields },
+      } = this
+        const validateFieldsKey = ['email', 'validcode']
+        validateFields(validateFieldsKey, { force: true }, (err, values) => {
+        if (!err) {
+          console.log('login form', values)
+         this.axios.post('/api/app/login/verify', {
+            email: values.email,
+            verifyCode:values.validcode,
+          })
+          .then((response)=> {
+            console.log(response);
+            
+            window.alert(response.data.message)
+            if(response.data.code === 0){
+                location.reload()
+                this.$store.commit('setID',response.data.data)
+                this.$store.commit('setEmail',values.email)
+                console.log(this.$store.state.user.id)
+                console.log(this.$store.state.user.email)
+                this.isLogin=this.$store.state.user.email
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        } else {
+          console.log("login err")
+        }
+      })
+    },
+
+      showLogin() {
+      this.visible_login = true;
+      },
+      showLogout() {
+      this.visible_logout = true;
+      },
+      logoutYes(){
+        this.$store.commit('logout')
+        this.visible_logout = false
+        location.reload()
+      },
+      logoutNo(){
+        this.visible_logout = false
+      }
   },
   mounted(){
     this.init();
@@ -242,7 +443,9 @@ export default {
   width: 100%;
   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
 }
-
+.music{
+  height: auto;
+}
 .content{
   background-image: url("../assets/back6.jpg");
   background-repeat: no-repeat;
@@ -264,7 +467,7 @@ export default {
   width: 33%;
 }
 
-#div4,#div3,#div2{
+#div4,#div3,#div2,#div5{
   float:right;
   margin-right: 1.2%;
   margin-top: 3%;
@@ -276,11 +479,6 @@ export default {
   opacity: 0.5;
   float: right;
   margin-right: 3%;
-}
-
-.searchtext{
-  font-size: 30px;
-  color:aliceblue;
 }
 
 .card{
@@ -467,6 +665,35 @@ box-shadow: 0px 5px 10px 3px rgba(255, 255, 255, 0.3);
   overflow:hidden;
 }
 
+.searchtext {
+  font-size:20px;
+  color: aliceblue;
+  bottom: 0;
+}
+.logouttext {
+  font-size:25px;
+  color: aliceblue;
+  bottom: 0;
+}
+.login-input {
+  box-shadow: 0px 2px 10px 3px rgba(0, 0, 0, 0.4);
+  opacity: 0.7;
+  border-radius: 5px 5px 5px 5px;
+}
+div /deep/ .ant-modal-body{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,30%);
+    height: 260px;
+     width:450px;
+     padding:50px 30px 30px;
+     background: rgba(0,0,0,.2);
+    box-sizing:border-box;
+     box-shadow: 0px 15px 25px rgba(0,0,0,.5);
+     border-radius:15px;
+}
+
     .main-circle{
         width: 800px;
         height: 800px;
@@ -511,4 +738,5 @@ box-shadow: 0px 5px 10px 3px rgba(255, 255, 255, 0.3);
             transform: rotate(360deg);
         }
     }
+
 </style>
