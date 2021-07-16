@@ -1,5 +1,7 @@
 package com.hinsliu.monki.service;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.hinsliu.monki.common.enums.ErrorCodeEnum;
 import com.hinsliu.monki.common.enums.SearchTypeEnum;
 import com.hinsliu.monki.common.exception.BusinessException;
@@ -11,13 +13,21 @@ import com.hinsliu.monki.domain.model.SearchActionDO;
 import com.hinsliu.monki.domain.query.RecommendQuery;
 import com.hinsliu.monki.domain.query.SearchQuery;
 import com.hinsliu.monki.domain.view.MovieMetaDTO;
+import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.util.EntityUtils;
+import org.elasticsearch.client.Request;
+import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,6 +48,10 @@ public class SearchEngineManager extends BaseManager {
 
     @Resource
     private SearchActionDao searchActionDao;
+
+    private static final String METHOD = "GET";
+
+    private static final String ENDPOINT = "/monki/_search";
 
     public Page<MovieMetaDTO> search(SearchQuery query) {
         // 分页验证
@@ -86,7 +100,41 @@ public class SearchEngineManager extends BaseManager {
     }
 
     public SearchResult searchES(String kw, SearchTypeEnum type, Integer from, Integer size) {
-        return null;
+        List<String> results = new ArrayList<>();
+        
+        // 构建请求体
+        Request request = new Request(METHOD, ENDPOINT);
+        JSONObject body = new JSONObject();
+
+        // 加入查询部分
+
+
+        // 设置请求体
+        request.setJsonEntity(body.toJSONString());
+
+        try {
+            // 发送请求并得到搜索结果
+            Response response = highLevelClient.getLowLevelClient().performRequest(request);
+
+            // 得到搜索结果
+            JSONObject jsonObject = JSONObject.parseObject(EntityUtils.toString(response.getEntity()));
+
+            // 解析得到每个搜索结果单项
+            JSONArray items = jsonObject.getJSONObject("hits").getJSONArray("hits");
+            for (int i = 0; i < items.size(); i++) {
+                JSONObject item = items.getJSONObject(i).getJSONObject("_source");
+                String id = item.get("id").toString();
+                results.add(id);
+            }
+        } catch (IOException e) {
+            log.warn("发送ES查找请求失败");
+            log.warn(e.getMessage(), e);
+        }
+
+        return SearchResult.builder()
+                .results(results)
+                .count(results.size())
+                .build();
     }
 
     public List<MovieMetaDTO> searchMongo(List<String> ids) {
@@ -94,6 +142,7 @@ public class SearchEngineManager extends BaseManager {
     }
 
     @Data
+    @Builder
     private static class SearchResult {
 
         private List<String> results;

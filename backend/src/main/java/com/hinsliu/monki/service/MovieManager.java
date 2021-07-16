@@ -8,6 +8,8 @@ import com.hinsliu.monki.common.utils.time.DateTimeUtil;
 import com.hinsliu.monki.dal.ClickActionDao;
 import com.hinsliu.monki.domain.model.ClickActionDO;
 import com.hinsliu.monki.domain.model.MovieDO;
+import com.hinsliu.monki.domain.model.MovieForSearchDO;
+import com.hinsliu.monki.domain.model.MusicDO;
 import com.hinsliu.monki.domain.query.MovieInfoQuery;
 import com.hinsliu.monki.domain.view.MovieDTO;
 import com.hinsliu.monki.domain.view.MovieMetaDTO;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -38,6 +41,14 @@ public class MovieManager extends BaseManager {
 
     @Resource
     private MongoTemplate mongoTemplate;
+
+    private static final String MOVIE_COLLECTION = "monki_movies";
+
+    private static final String SEARCH_COLLECTION = "monki_search";
+
+    private static final String DEFAULT_POPULARITY = "1000";
+
+    private static final Double DEFAULT_RATING = 6.0;
 
     public MovieDTO get(MovieInfoQuery query) {
         String id = query.getId();
@@ -71,7 +82,7 @@ public class MovieManager extends BaseManager {
     public MovieDO getOneMovieDocument(String id) {
         Query query = Query.query(Criteria.where("_id").is(new ObjectId(id)));
 
-        MovieDO movieDO = mongoTemplate.findOne(query, MovieDO.class);
+        MovieDO movieDO = mongoTemplate.findOne(query, MovieDO.class, MOVIE_COLLECTION);
         if (movieDO == null) {
             log.warn("查找索引{}对应的电影文档失败", id);
             throw new BusinessException(ErrorCodeEnum.FAIL.getCode(), "查找索引对应的电影文档失败");
@@ -84,6 +95,25 @@ public class MovieManager extends BaseManager {
     public MovieMetaDTO getMovieMeta(MovieDO movieDO) {
         MovieDTO movieDTO = CopyUtils.MovieDOToMovieDTO(movieDO);
         return CopyUtils.MovieDTOToMovieMetaDTO(movieDTO);
+    }
+
+    public void parseMongoMovies() {
+        log.info("正在进行电影信息解析...");
+        List<MovieDO> documents = mongoTemplate.findAll(MovieDO.class, MOVIE_COLLECTION);
+
+        List<MovieForSearchDO> searchDOList = documents.stream().map(document -> {
+            MovieForSearchDO searchDO = new MovieForSearchDO();
+            BeanUtils.copyProperties(document, searchDO);
+            searchDO.setRating(document.getRating() != null ? document.getRating() : DEFAULT_RATING);
+            searchDO.setPopularity(Integer.parseInt(document.getPopularity() != null ? document.getPopularity().replaceAll(",", "") : DEFAULT_POPULARITY));
+            searchDO.setMusics(document.getMusic().stream().map(MusicDO::getName).collect(Collectors.joining(UtilConstant.DEFAULT_DELIMITER)));
+            searchDO.setVisits(String.join(UtilConstant.DEFAULT_DELIMITER, document.getLocation().getVisit()));
+            searchDO.setGenre(String.join(UtilConstant.DEFAULT_DELIMITER, document.getGenre()));
+            return searchDO;
+        }).collect(Collectors.toList());
+
+        mongoTemplate.insert(searchDOList, SEARCH_COLLECTION);
+        log.info("完成电影信息解析");
     }
 
 }
