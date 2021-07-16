@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Search from '../views/Search.vue'
 import Result from '../views/Result.vue'
+import Demo from '../views/demo.vue';
 
 Vue.use(VueRouter)
 
@@ -27,7 +28,11 @@ const routes = [
     name: 'Result',
     component: Result
   },
-
+  {
+    path: '/demo',
+    name: 'Demo',
+    component: Demo
+  },
 ]
 
 const router = new VueRouter({

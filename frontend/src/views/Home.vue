@@ -2,7 +2,7 @@
   <div class="home1" style="minHeight: calc(100vh)">
     <video loop autoplay muted style="width:100%;" ref="video" :src="this.videoname">
     </video>
-    <div class="loginbutton">
+    <div class="loginbutton" style="margin-top:14.5px">
       <div id="div2"><a href="https://movie.douban.com/" style="color: white">Movie</a></div>
       <div id="div3"><a href="https://map.baidu.com/" style="color: white">Location</a></div>
       <div id="div4"><a href="https://music.163.com/" style="color: white">Music</a></div>
@@ -13,10 +13,11 @@
               type="user"
               size="large"
               class="searchtext"
+              style="float:right;margin-right:49px"
               v-if="isLogin == null"
               @click="showLogin"
             />
-            <h1 class="searchtext" style="font-size:15px" @click="showLogout" v-else>
+            <h1 class="searchtext" style="font-size:15px;float:right;margin-right:49px" @click="showLogout" v-else>
               {{ isLogin }}
             </h1>
     </div>
@@ -111,7 +112,7 @@
     <div class="search">
       <div class="searchtext">
       <a-icon :type="this.buttontype" @click="stopvideo"/>Search</div>
-      <a-input-search class="input-box" placeholder="Please Input Search Text" style="width: 400px" @search="onSearch" size="large"/>
+      <a-input-search class="input-box" placeholder="Please Input Search Text" style="width: 400px" v-model="text" @search="onSearch" size="large"/>
     </div>
     
   <div class="nextbutton">
@@ -121,9 +122,9 @@
     <div class="wrapper">
     <div class="mouse-wheel-wrapper" ref="scroll">
       <div class="mouse-wheel-content">
-        <div class="mouse-wheel-item" v-for="n in 50" :key="n" :style="Getmoviestyle(n)">
+        <div class="mouse-wheel-item" v-for="(item, i) in test" :key=i :style="Getmoviestyle(item, i)" @click="clickTop(item.id)">
         <div class="Moviename">
-          123
+          {{item.name}}
         </div>
         </div>
       </div>
@@ -136,6 +137,53 @@
 import BScroll from '@better-scroll/core'
 import MouseWheel from '@better-scroll/mouse-wheel'
 BScroll.use(MouseWheel)
+// 测试数据
+var test=[]
+var test1={
+  "id":"233",
+  "post": require("../assets/Movieback.jpg"),
+  "name":"!MovieName!",
+  "rating":"9.99",
+  "year":"1999",
+  "genre":['Action','Amour'],
+  "director":"Alan Walker",
+  "music":['music1','music2333333333333333333333333333333333333333333333333333333333333333333333333'],
+  "visit":['Hz','Sh'],
+}
+for(var i=0;i<=9;i++)
+{
+  test1.name = String(i+1) +". "+ "!MovieName!"
+  if(i == 2)
+    test1.post = "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+  else
+    test1.post = require("../assets/Movieback.jpg")
+  var test2=JSON.parse(JSON.stringify(test1))
+  test.push(test2)
+}
+var movie = []
+var movie1 = {
+  height:'120px',
+          width: '200px',
+          marginRight: '2%',
+          fontSize:'16px',
+          display:'inline-block',
+          textAlign:'center',
+          padding:'20 20px',
+          lineHeight:'50px',
+          borderRadius:'5px 5px 5px 5px',
+          background: 'url(require(../assets/Movieback.jpg))',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center center',
+          opacity: '0.8',
+          boxShadow: '0px 5px 10px 3px rgba(0, 0, 0, 0.4)',
+          transition:'all o.6s',
+          filter: 'grayscale(50%)'
+}
+for(let j=0;j<=9;j++)
+{
+  var movie2=JSON.parse(JSON.stringify(movie1))
+  movie.push(movie2)
+}
 export default {
   name: "Home",
   components: {},
@@ -146,6 +194,7 @@ export default {
       count: 60,
       issend: true,
       priority:0,
+      test,
       text:this.$store.state.search.search,
       isLogin: this.$store.state.user.email,
       form: this.$form.createForm(this),
@@ -155,7 +204,7 @@ export default {
       Moviestyle:{
           height:'120px',
           width: '200px',
-          marginRight: '1%',
+          marginRight: '2%',
           fontSize:'16px',
           display:'inline-block',
           textAlign:'center',
@@ -170,39 +219,7 @@ export default {
           transition:'all o.6s',
           filter: 'grayscale(50%)'
       },
-      movie:[{
-          height:'120px',
-          width: '200px',
-          marginRight: '1%',
-          fontSize:'24px',
-          display:'inline-block',
-          textAlign:'center',
-          padding:'20 20px',
-          lineHeight:'50px',
-          borderRadius:'5px 5px 5px 5px',
-          backgroundImage: 'url(../assets/Movieback.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          opacity: '0.8',
-          boxShadow: '0px 2px 10px 3px rgba(0, 0, 0, 0.4)'
-      },
-      {
-          height:'120px',
-          width: '200px',
-          marginRight: '1%',
-          fontSize:'24px',
-          display:'inline-block',
-          textAlign:'center',
-          padding:'20 20px',
-          lineHeight:'50px',
-          borderRadius:'5px 5px 5px 5px',
-          backgroundColor: 'aqua',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          opacity: '0.8',
-          boxShadow: '0px 2px 10px 3px rgba(0, 0, 0, 0.4)'
-      }
-      ],
+      movie,
       backconststyle:'home1',
       number:0,
       number1:0,
@@ -221,22 +238,16 @@ export default {
           mouseWheel: true
         })
       },
-      Getmoviestyle:function(){
-        /*
-        if(n%2==1){
-          console.log(this.movie[0]);
-          return this.movie[0];
-        }else{
-          console.log(this.movie[1]);
-          return this.movie[1];
-        }*/
-        //解决方案 https://www.jianshu.com/p/1bf3ebaddc98
-        this.Moviestyle.background = 'url('+require('../assets/Movieback.jpg')+')';
-        return this.Moviestyle;
+      Getmoviestyle:function(item, i){
+        this.movie[i].background = 'url(' + item.post + ')'
+        return this.movie[i];
       },
       onSearch(){
-
-      },
+        this.$store.commit('setSearch',this.text)
+        console.log(this.text)
+        console.log(this.$store.state.search.search)
+        this.$router.push('/search')
+    },
 
       sendcode() {
         const TIME_COUNT = 60
@@ -272,7 +283,7 @@ export default {
         });
       },
 
-checkEmail (rule, value, callback) {
+    checkEmail (rule, value, callback) {
       const regex = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/
       if (!regex.test(value)) {
         callback('Please Enter the Valid Email!')
@@ -363,10 +374,43 @@ checkEmail (rule, value, callback) {
           this.number = 0;
           this.backconststyle = this.backstyle[this.number];
         }
-      }
+      },
+      getTop()
+    {
+      this.loading = true;
+      // TODO: 获取热搜榜的接口的测试
+      this.axios.get('/api/app/engine/recommend',{
+        headers:{
+          'token':this.$store.state.user.id
+        },
+        params:{
+          'page':1,
+          'pageSize':10,
+        }
+      }).then((res)=>{
+        this.loading = false
+        console.log(res.data)
+        if(res.data.success == true){
+          this.test = res.data.data.results
+        }
+        else{
+          window.alert(res.data.message)
+          console.log(res.data.message)
+        }
+      }).catch(function (error) {
+            console.log(error)
+        })
+    },
+    clickTop(id)
+    {
+      this.$store.commit('setMovieId',id)
+      this.$router.push('/result')
+    }
   },
   mounted(){
     this.init();
+    console.log(this.movie)
+    this.getTop()
   }
 };
 </script>
@@ -409,14 +453,10 @@ video{
 }
 
 .search {
-  padding-top: 10%;
+  padding-top: 4.5%;
   padding-left: 10%;
 }
 
-.searchtext{
-  font-size: 30px;
-  color:aliceblue;
-}
 .recommond-box{
   width: 800px;
   height: 200px;
@@ -427,8 +467,8 @@ video{
 
 .wrapper{
   width: 1000px;
-  height: 200px;
-  margin-top: 10%;
+  height: 220px;
+  margin-top: 8%;
   margin-left: 10%;
 }
 
@@ -436,9 +476,8 @@ video{
   display:inline-block;
 }
 
-
 .mouse-wheel-item:hover{
-transform: scale(1.4);
+transform: scale(1.3);
 -webkit-filter: brightness(2.3);
 filter: brightness(2.3);
 }
@@ -718,18 +757,4 @@ div /deep/ .ant-pagination-jump-prev .ant-pagination-item-container .ant-paginat
 div /deep/ .ant-pagination-jump-next .ant-pagination-item-container .ant-pagination-item-ellipsis{
   color:aliceblue;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </style>
