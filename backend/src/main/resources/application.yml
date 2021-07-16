@@ -48,7 +48,7 @@ swagger:
   version: 1.0.0
 
 elasticsearch:
-  server: 127.0.0.1
+  server: www.neohugh.art
   port: 9200
 
 

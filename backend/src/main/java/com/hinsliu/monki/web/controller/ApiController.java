@@ -19,7 +19,7 @@ import javax.annotation.Resource;
  * @date 2021/7/16 11:25
  * @description: API接口
  */
-@Api(description = "API相关接口")
+@Api(description = "内部API相关接口")
 @Slf4j
 @RestController
 @RequestMapping("/api")
