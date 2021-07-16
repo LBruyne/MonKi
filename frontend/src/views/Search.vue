@@ -157,6 +157,20 @@
         :getContainer='()=>$refs.pagination' />
         </div>
       </div>
+      <!-- 小小动画 -->
+      <div class="resultItems2" v-if="loading == true">
+        <div class="person">
+          <div class="person_head"></div>
+          <div class="person_body">
+            <div class="hand1"></div>
+            <div class="hand2"></div>
+          </div>
+          <div class="leg">
+            <div class="leg_left"></div>
+            <div class="leg_right"></div>
+          </div>
+        </div>
+      </div>
       <!-- 右侧热搜 -->
       <div class="hotItems" v-if="loading == false">
         <div class="list">
@@ -200,7 +214,7 @@ for(let i =0;i<test2.length;i++)
 export default {
   data() {
     return {
-      loading:false, 
+      loading:true, 
       visible_login: false,
       visible_logout:false,
       count: 60,//重新发送验证码等待时间
@@ -440,7 +454,21 @@ export default {
     {
       this.$store.commit('setMovieId',id)
       this.$router.push('/result')
-    }
+    },
+    play() {
+      this.$anime
+        .timeline({
+          easing: "easeInOutQuad", //动画速率
+          direction: "alternate", //返回执行
+          duration: 300, //动画时间
+          loop: true, //执行次数 true 为无限次
+        })
+        .add({ targets: ".person", rotate: [10, 20] }, 0) //身体是否倾斜
+        .add({ targets: ".hand1", rotate: [80, -50] }, 0) //左手晃动幅度
+        .add({ targets: ".hand2", rotate: [-50, 80] }, 0) //右手晃动幅度
+        .add({ targets: ".leg .leg_left", rotate: [30, -60] }, 0) //左脚晃动幅度
+        .add({ targets: ".leg .leg_right", rotate: [-60, 30] }, 0); //右脚晃动幅度
+    },
   },
   mounted() {
     console.log(this.$store.state.user.id)
@@ -448,8 +476,10 @@ export default {
     console.log(this.$store.state.search.search)
     console.log(this.$store.state.search.priority)
     console.log(this.loading)
-    this.getTop()
-    this.onChange(1)
+    setTimeout(this.getTop(),1000)
+    setTimeout(this.onChange(1),1000)
+    setTimeout(this.play(),1)
+    
   },
 };
 </script>
@@ -704,5 +734,126 @@ div /deep/ .ant-pagination-jump-prev .ant-pagination-item-container .ant-paginat
 }
 div /deep/ .ant-pagination-jump-next .ant-pagination-item-container .ant-pagination-item-ellipsis{
   color:aliceblue;
+}
+
+
+.resultItems2{
+  float:left;
+  width:70%;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: top;
+  margin-top:150px
+}
+.person {
+  transform-origin: 1% 2%;
+  margin: 0 auto;
+}
+
+.person_head {
+  width: 20px;
+  height: 20px;
+  background: aliceblue;
+  border-radius: 50%;
+}
+.person_body {
+  width: 22px;
+  height: 50px;
+  border-radius: 20px;
+  background: aliceblue;
+  margin-top: 2px;
+  position: relative;
+}
+.hand1 {
+  position: absolute;
+  width: 10px;
+  height: 25px;
+  left: calc(50% - 5px);
+  top: 7px;
+  border-radius: 10px;
+  background: aliceblue;
+  transform-origin: 50% 0;
+}
+.hand1::after {
+  content: "";
+  width: 10px;
+  height: 25px;
+  border-radius: 10px;
+  background: aliceblue;
+  position: absolute;
+  bottom: 5px;
+  left: -3px;
+  transform-origin: 50% 100%;
+  transform: rotate(130deg);
+}
+.hand2 {
+  position: absolute;
+  width: 10px;
+  height: 25px;
+  left: calc(50% - 5px);
+  top: 7px;
+  border-radius: 10px;
+  background: aliceblue;
+  transform-origin: 50% 0;
+}
+.hand2::after {
+  content: "";
+  width: 10px;
+  height: 25px;
+  border-radius: 10px;
+  background: aliceblue;
+  position: absolute;
+  bottom: 5px;
+  left: -3px;
+  transform-origin: 50% 100%;
+  transform: rotate(130deg);
+}
+.leg {
+  width: 10px;
+  position: relative;
+  top: -10px;
+}
+.leg_left {
+  width: 10px;
+  height: 30px;
+  background: aliceblue;
+  border-radius: 10px;
+  position: absolute;
+  transform-origin: 50% 0;
+}
+.leg_left::after {
+  content: "";
+  width: 10px;
+  height: 30px;
+  border-radius: 10px;
+  background: aliceblue;
+  position: absolute;
+  bottom: 5px;
+  left: 2px;
+  transform-origin: 50% 100%;
+  transform: rotate(-130deg);
+}
+.leg_right {
+  width: 10px;
+  height: 30px;
+  background: aliceblue;
+  border-radius: 10px;
+  position: absolute;
+  transform-origin: 50% 0;
+}
+.leg_right::after {
+  content: "";
+  width: 10px;
+  height: 30px;
+  border-radius: 10px;
+  background: aliceblue;
+  position: absolute;
+  bottom: 5px;
+  left: 2px;
+  transform-origin: 50% 100%;
+  transform: rotate(-130deg);
 }
 </style>
