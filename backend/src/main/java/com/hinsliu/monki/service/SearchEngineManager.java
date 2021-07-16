@@ -46,7 +46,7 @@ public class SearchEngineManager extends BaseManager {
 
     private static final Double MUSICS_BOOST = 0.25;
 
-    private static final Double SPECIFIED_BOOST = 0.5;
+    private static final Double SPECIFIED_BOOST = 1.0;
 
     private static final Double RATING_FACTOR = 0.1;
 
