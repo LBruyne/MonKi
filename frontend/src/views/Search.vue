@@ -174,8 +174,8 @@
       <!-- 右侧热搜 -->
       <div class="hotItems" v-if="loading == false">
         <div class="list">
-          <div class="hotTitle" style="text-align:center;margin-top:20px;font-size:30px;color:#00FFFF">Monki Top Search</div>
-          <div class="hotItem" style="margin-left:30px;padding-top:20px;margin-right:30px;overflow:hidden;white-space:nowrap" v-for="(item, k) in test2" :key=k
+          <div class="hotTitle" style="text-align:center;margin-top:20px;font-size:30px;color:aliceblue;">MONKI</div>
+          <div class="hotItem" style="margin-left:30px;padding-top:18.5px;margin-right:30px;overflow:hidden;white-space:nowrap;line-height:22px" v-for="(item, k) in test2" :key=k
             @click="clickTop(item.id, k)">
           {{item.name}}</div>
         </div>
@@ -451,7 +451,7 @@ export default {
             relevant.push(res.data.data.results[i].id)
           }
           this.$store.state.search.relevant = relevant
-          
+
           for(let i =0;i<this.test2.length;i++){
             this.test2[i].name = String(i+1)+ ". "+ this.test2[i].name
           }
@@ -647,15 +647,17 @@ div /deep/ .ant-modal-body{
 }
 .card .filmtext .moviename{
   overflow:hidden;
+  line-height: 40px;
   white-space:nowrap;
-  padding-top:30px;
+  padding-top:20px;
   font-size: 30px;
   color: aliceblue;
   float: left;
   width: 70%;
 } 
 .card .filmtext .rating{
-  padding-top:30px;
+  padding-top:20px;
+  line-height: 40px;
   font-size: 20px;
   color: aliceblue;
   float: right;
@@ -708,10 +710,12 @@ div /deep/ .ant-modal-body{
     border-radius: 20px;
     box-shadow: 0px 2px 9px 5px rgba(0, 0, 0, 0.4);
     z-index: 100;
-    background-image: url("../assets/monki.png");
-    background-size: cover;
-    background-position: center center;
-    background-color: rgba(0,139,139, 0.6);
+    background-image: url("../assets/monki2.png");
+    background-size:220px 200px;
+    background-repeat:no-repeat;
+    background-position:90% 90%;
+    background-origin:content-box;
+    background-color: rgba(0,139,139, 0.3);
     background-blend-mode: darken;
 }
 .list:hover{
