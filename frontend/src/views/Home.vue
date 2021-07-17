@@ -105,10 +105,6 @@
       </a-modal>
       </div>
     </div>
-
-
-
-
     <div class="search">
       <div class="searchtext">
       <a-icon :type="this.buttontype" @click="stopvideo"/>Search</div>
@@ -381,7 +377,7 @@ export default {
       // TODO: 获取热搜榜的接口的测试
       this.axios.get('/api/app/engine/recommend',{
         headers:{
-          'token':this.$store.state.user.id
+          'Authorization':this.$store.state.user.id
         },
         params:{
           'page':1,

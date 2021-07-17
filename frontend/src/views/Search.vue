@@ -427,7 +427,7 @@ export default {
       // TODO: 获取热搜榜的接口的测试
       this.axios.get('/api/app/engine/recommend',{
         headers:{
-          'token':this.$store.state.user.id
+          'Authorization':this.$store.state.user.id
         },
         params:{
           'page':1,

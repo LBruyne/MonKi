@@ -317,6 +317,16 @@ export default {
       visible: false,
       count: 60,
       priority:0,
+      musiclist:[],
+      introduction:'',
+      imagelist:[],
+      moviename:'',
+      movietime:'',
+      moviedirector:[],
+      movieyear:'',
+      movielanguage:'',
+      movietype:[],
+      movieylocation:''
     };
   },
   name: "Result",
@@ -423,6 +433,32 @@ checkEmail (rule, value, callback) {
       },
       logoutNo(){
         this.visible_logout = false
+      },
+      getMessage(){
+        this.axios.get('/api/app/movie/get',{
+        headers:{
+          'Authorization':this.$store.state.user.id
+        },
+        params:{
+          'id':this.$store.state.search.movieId
+        }
+      }).then((res)=>{
+        if(res.data.success == true){
+          this.introduction = res.data.data.location.introduction;
+          this.imagelist = res.data.data.location.images;
+          this.musiclist = res.data.data.music;
+          this.moviename = res.data.data.name;
+          this.movieyear = res.data.data.year;
+          this.movietype = res.data.data.genre;
+          
+          this.test = res.data.data.results
+        }
+        else{
+          window.alert(res.data.message)
+        }
+      }).catch(function (error) {
+            console.log(error)
+        })
       }
   },
   mounted(){
