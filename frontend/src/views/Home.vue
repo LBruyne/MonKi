@@ -392,7 +392,7 @@ export default {
           for(let i = 0;i<res.data.data.results.length;i++){
             relevant.push(res.data.data.results[i].id)
           }
-          this.$store.state.search.relevant = relevant
+          this.$store.commit('setRelevant',relevant)
         }
         else{
           window.alert(res.data.message)
@@ -404,7 +404,7 @@ export default {
     },
     clickTop(id, i)
     {
-      this.$store.state.search.current = i;
+      this.$store.commit('setCurrent',i)
       this.$store.commit('setMovieId',id)
       this.$router.push('/result')
       console.log(this.$store.state.search.current)

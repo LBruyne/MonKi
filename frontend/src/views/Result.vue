@@ -206,6 +206,8 @@ export default {
       issend: true,
       text:this.$store.state.search.search,
       isLogin: this.$store.state.user.email,
+      relevant:this.$store.state.search.relevant,
+      current:Number(this.$store.state.search.current),
       form: this.$form.createForm(this),
       data:[],
       loading: false,
@@ -363,8 +365,12 @@ checkEmail (rule, value, callback) {
         this.visible_logout = false
       },
       next:function(){
-        this.$store.state.search.current++;
+        if(parseInt(this.current)<this.relevant.length-1)
+          this.$store.commit('setCurrent',parseInt(this.current)+1)
+        else
+          this.$store.commit('setCurrent',parseInt(this.current)-this.relevant.length + 1)
         console.log("hhh");
+        location.reload()
       },
       getMessage(){
         this.axios.get('/api/app/movie/get',{
@@ -372,7 +378,7 @@ checkEmail (rule, value, callback) {
           'Authorization':this.$store.state.user.id
         },
         params:{
-          'id':this.$store.state.search.relevant[this.$store.state.search.current]
+          'id':this.relevant[this.current]
         }
       }).then((res)=>{
         if(res.data.success == true){
@@ -401,7 +407,12 @@ checkEmail (rule, value, callback) {
   },
   mounted(){
     this.init();
+    
     this.getMessage();
+    
+    console.log(this.relevant)
+    console.log(this.current)
+    console.log(this.relevant[this.current])
   }
 };
 </script>
