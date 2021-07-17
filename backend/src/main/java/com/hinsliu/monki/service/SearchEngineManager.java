@@ -146,8 +146,8 @@ public class SearchEngineManager extends BaseManager {
             count = jsonObject.getJSONObject("hits").getJSONObject("total").getInteger("value");
 
         } catch (IOException e) {
-            log.warn("发送ES查找请求失败");
             log.warn(e.getMessage(), e);
+            throw new BusinessException(ErrorCodeEnum.FAIL.getCode(), "发送ES查找请求失败");
         }
 
         return SearchResult.builder()
@@ -217,5 +217,7 @@ public class SearchEngineManager extends BaseManager {
         private Integer count;
 
     }
+
+
 
 }
