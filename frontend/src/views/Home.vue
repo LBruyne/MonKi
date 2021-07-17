@@ -118,7 +118,7 @@
     <div class="wrapper">
     <div class="mouse-wheel-wrapper" ref="scroll">
       <div class="mouse-wheel-content">
-        <div class="mouse-wheel-item" v-for="(item, i) in test" :key=i :style="Getmoviestyle(item, i)" @click="clickTop(item.id)">
+        <div class="mouse-wheel-item" v-for="(item, i) in test" :key=i :style="Getmoviestyle(item, i)" @click="clickTop(item.id, i)">
         <div class="Moviename">
           {{item.name}}
         </div>
@@ -388,6 +388,11 @@ export default {
         console.log(res.data)
         if(res.data.success == true){
           this.test = res.data.data.results
+          var relevant = []
+          for(let i = 0;i<res.data.data.results.length;i++){
+            relevant.push(res.data.data.results[i].id)
+          }
+          this.$store.state.search.relevant = relevant
         }
         else{
           window.alert(res.data.message)
@@ -397,11 +402,13 @@ export default {
             console.log(error)
         })
     },
-    clickTop(id)
+    clickTop(id, i)
     {
+      this.$store.state.search.current = i;
       this.$store.commit('setMovieId',id)
       this.$router.push('/result')
-    }
+      console.log(this.$store.state.search.current)
+    },
   },
   mounted(){
     this.init();
@@ -464,7 +471,7 @@ video{
 .wrapper{
   width: 1000px;
   height: 220px;
-  margin-top: 8%;
+  margin-top: 7%;
   margin-left: 10%;
 }
 
@@ -483,12 +490,15 @@ filter: brightness(2.3);
     white-space:nowrap;
     border-radius:5px;
     overflow:hidden;
+    height: 80%;
 }  
 
 .Moviename{
     color:aliceblue;
     margin-top: 55%;
     margin-bottom: -3px;
+    overflow:hidden;
+    white-space:nowrap;
 }
 
 .nextbutton{
