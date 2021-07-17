@@ -32,3 +32,11 @@ export default new Vuex.Store({
 // this.$store.state.search.search      用户的搜索文本，跳转页面之后自动请求
 // this.$store.state.search.movieId     用户的详情选择，跳转页面之后自动请求
 // this.$store.state.search.priority    用户搜索的优先级
+
+// 不想把relevant和current放在localStorage，所以就简单的存储就行了
+// 保存：
+// this.$store.state.search.relevant = relevant
+// this.$store.state.search.current = current 默认值是1
+// 调用：
+// this.$store.state.search.relevant    保存相关的所有movieId
+// this.$store.state.search.current     保存当前是第几个

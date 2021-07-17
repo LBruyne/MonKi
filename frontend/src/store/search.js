@@ -3,6 +3,8 @@ export default{
         search:window.localStorage.getItem('search')?window.localStorage.getItem('search'):undefined,
         movieId:window.localStorage.getItem('movieId')?window.localStorage.getItem('movieId'):undefined,
         priority:window.localStorage.getItem('priority')?window.localStorage.getItem('priority'):0,
+        current:1,
+        relevant:[],
     },
     getters:{
         search:(state)=>{
