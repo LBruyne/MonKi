@@ -5,7 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.hinsliu.monki.common.enums.ErrorCodeEnum;
 import com.hinsliu.monki.common.enums.SearchTypeEnum;
 import com.hinsliu.monki.common.exception.BusinessException;
+import com.hinsliu.monki.common.utils.es.ESUtils;
 import com.hinsliu.monki.common.utils.time.DateTimeUtil;
+import com.hinsliu.monki.dal.ClickActionDao;
 import com.hinsliu.monki.dal.SearchActionDao;
 import com.hinsliu.monki.domain.common.Page;
 import com.hinsliu.monki.domain.common.PageParam;
@@ -40,20 +42,6 @@ import java.util.stream.Collectors;
 @Service
 public class SearchEngineManager extends BaseManager {
 
-    private static final Double NAME_BOOST = 0.25;
-
-    private static final Double VISITS_BOOST = 0.25;
-
-    private static final Double MUSICS_BOOST = 0.25;
-
-    private static final Double SPECIFIED_BOOST = 1.0;
-
-    private static final Double RATING_FACTOR = 0.1;
-
-    private static final Double POPULARITY_FACTOR = 0.1;
-
-    private static final String POPULARITY_MODIFIER = "log1p";
-
     @Autowired
     private RestHighLevelClient highLevelClient;
 
@@ -63,9 +51,8 @@ public class SearchEngineManager extends BaseManager {
     @Resource
     private SearchActionDao searchActionDao;
 
-    private static final String METHOD = "GET";
-
-    private static final String ENDPOINT = "/monki/_search";
+    @Resource
+    private ClickActionDao clickActionDao;
 
     public Page<MovieMetaDTO> search(SearchQuery query) {
         // 分页验证
@@ -118,7 +105,7 @@ public class SearchEngineManager extends BaseManager {
         Integer count = 0;
 
         // 构建请求体
-        Request request = new Request(METHOD, ENDPOINT);
+        Request request = new Request(ESUtils.METHOD, ESUtils.ENDPOINT);
         JSONObject body = new JSONObject();
 
         // 加入查询部分
@@ -157,15 +144,15 @@ public class SearchEngineManager extends BaseManager {
     }
 
     private void addRequestBody(JSONObject body, String kw, SearchTypeEnum type, Integer from, Integer size) {
-        Double nameBst = NAME_BOOST, visitBst = VISITS_BOOST, musicBst = MUSICS_BOOST;
+        Double nameBst = ESUtils.NAME_BOOST, visitBst = ESUtils.VISITS_BOOST, musicBst = ESUtils.MUSICS_BOOST;
 
         // 获取加权
         if (type == SearchTypeEnum.MOVIE) {
-            nameBst = SPECIFIED_BOOST;
+            nameBst = ESUtils.SPECIFIED_BOOST;
         } else if (type == SearchTypeEnum.LOCATION) {
-            visitBst = SPECIFIED_BOOST;
+            visitBst = ESUtils.SPECIFIED_BOOST;
         } else if (type == SearchTypeEnum.MUSIC) {
-            musicBst = SPECIFIED_BOOST;
+            musicBst = ESUtils.SPECIFIED_BOOST;
         }
 
         // source
@@ -189,8 +176,8 @@ public class SearchEngineManager extends BaseManager {
         body.getJSONObject("query").getJSONObject("function_score").getJSONObject("query").getJSONObject("bool").getJSONArray("should").fluentAdd(name).fluentAdd(visits).fluentAdd(musics);
 
         body.getJSONObject("query").getJSONObject("function_score").put("functions", new JSONArray());
-        JSONObject rating = new JSONObject().fluentPut("field_value_factor", new JSONObject().fluentPut("field", "rating").fluentPut("factor", RATING_FACTOR));
-        JSONObject popularity = new JSONObject().fluentPut("field_value_factor", new JSONObject().fluentPut("field", "popularity").fluentPut("factor", POPULARITY_FACTOR).fluentPut("modifier", POPULARITY_MODIFIER));
+        JSONObject rating = new JSONObject().fluentPut("field_value_factor", new JSONObject().fluentPut("field", "rating").fluentPut("factor", ESUtils.RATING_FACTOR));
+        JSONObject popularity = new JSONObject().fluentPut("field_value_factor", new JSONObject().fluentPut("field", "popularity").fluentPut("factor", ESUtils.POPULARITY_FACTOR).fluentPut("modifier", ESUtils.POPULARITY_MODIFIER));
         body.getJSONObject("query").getJSONObject("function_score").getJSONArray("functions").fluentAdd(rating).fluentAdd(popularity);
 
         body.getJSONObject("query").getJSONObject("function_score").put("score_mode", "sum");
