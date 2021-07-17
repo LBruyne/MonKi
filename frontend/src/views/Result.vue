@@ -4,18 +4,22 @@
     marginBottom: '10px',
     marginLeft:'92%',
     marginTop:'550px'}">
-        <a-icon type="caret-right" :style="{ fontSize: '40px', color: '#ffffff' , marginRight: '50px' ,position:absolute }"/>
+        <a-icon type="caret-right" :style="{ fontSize: '40px', color: '#ffffff' , marginLeft: '50px' ,position:'absolute' }" @click="next()"/>
     </div>
+
     <div class="content">
     <div class="moviename">
-          Call me by your name
+          {{this.moviename}}
+          <a-icon type="caret-right" :style="{ fontSize: '40px', color: '#ffffff' , marginLeft: '50px' ,position:'absolute' }" @click="next()"/>
     </div>
+
     <div class="search">
       <a-input-search class="input-box" placeholder="Please Input Search Text" style="width: 360px" @search="onSearch" size="small"/>
     </div>
     <div id="div2"><a href="https://movie.douban.com/" style="color: white">Movie |</a></div>
     <div id="div3"><a href="https://map.baidu.com/" style="color: white">Location</a></div>
     <div id="div4"><a href="https://music.163.com/" style="color: white">Music</a></div>
+
     <a-icon
       type="user"
       size="large"
@@ -117,11 +121,13 @@
       <div class="card">
       <div class="text-box">
           <br/>
-          <div class="Movietime">Time:</div>
-          <div class="Movielocation">Location:</div>
-          <div class="Movietype">Type:</div>
-          <div class="Movielanguage">Language:</div>
-          <div class="Moviedirector">Director:</div>
+          <div class="Movietime">
+          {{'Time:'+this.movieyear}}
+          </div>
+          <div class="Movielocation">{{'Location:'+this.movieylocation}}</div>
+          <div class="Movietype">{{'Type:'+this.movietype}}</div>
+          <div class="Movielanguage">{{'Rate:'+this.movierate}}</div>
+          <div class="Moviedirector">{{'Director:'+this.moviedirector}}</div>
 </div>
     </div>
     </div>
@@ -137,9 +143,10 @@
       <div class="wrapper">
         <div class="mouse-wheel-wrapper" ref="scroll1">
           <div class="mouse-wheel-content">
-            <div class="mouse-wheel-item" v-for="n in 50" :key="n">
-             <a style="color: white" href="https://music.163.com/#/search/m/?s=%E4%B8%A4%E5%8F%AA%E8%80%81%E8%99%8E&type=1">
-             两只老虎-群星
+            <div class="mouse-wheel-item" v-for="(item,n) in this.musiclist" :key="n">
+             <a style="color: white" :href="'https://music.163.com/#/search/m/?s='+item.name +'&type=1'">
+             {{item.name}}<br/>
+             <div v-for="i in 1" :key="i">{{item.composer[i]}}</div>
              </a>
              <a-icon type="link" :style="{ fontSize: '20px', color: '#ffffff' , marginRight: '50px' ,float:'right' }"/>
             </div>
@@ -149,7 +156,7 @@
 
       <div class="poster">
         <div class="main-circle">
-            <div class="circle">
+            <div :style="getbackground1()">
                 <div class="circle-heart"></div>
             </div>
         </div>        
@@ -164,118 +171,7 @@
         <div class="mouse-wheel-wrapper" ref="scroll2">
           <div class="mouse-wheel-content">
             <div class="mouse-wheel-item1">
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-                            dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              {{this.introduction}}
             </div>
             <div :style="{backgroundColor:'#000000',height:'1px'}"></div>
           </div>
@@ -324,9 +220,35 @@ export default {
       movietime:'',
       moviedirector:[],
       movieyear:'',
-      movielanguage:'',
+      movierate:'',
       movietype:[],
-      movieylocation:''
+      movieylocation:[],
+      moviepost:'',
+      movie1:{
+        backgroundImage: 'url('+ this.moviepost +')',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+        minWidth: '100%',
+        minHeight: '600px',
+        width: 'auto',
+        backgroundPosition: 'center center',
+        height: 'auto',
+        boxShadow: 'rgba(0, 0, 0, 0.4) 0px 30px 90px'
+      },
+      circle:{
+        width: '400px',
+        height: '400px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: '0 auto',
+        borderRadius: '100%',
+        backgroundColor: 'red',
+        /*看不出旋转效果，所以使用图片*/
+        backgroundImage: 'url(' + this.moviepost+')',
+        backgroundSize: 'cover'
+      },
+      backgroundurl:''
     };
   },
   name: "Result",
@@ -342,6 +264,10 @@ export default {
         this.bs3 = new BScroll(this.$refs.scroll3, {
           mouseWheel: true
         })
+      },
+      getbackground1:function(){
+        this.circle.backgroundImage = 'url(' + this.backgroundurl + ')';
+        return this.circle;
       },
       sendcode() {
         const TIME_COUNT = 60
@@ -419,7 +345,9 @@ checkEmail (rule, value, callback) {
         }
       })
     },
+      onSearch(){
 
+      },
       showLogin() {
       this.visible_login = true;
       },
@@ -434,13 +362,17 @@ checkEmail (rule, value, callback) {
       logoutNo(){
         this.visible_logout = false
       },
+      next:function(){
+        this.$store.state.search.current++;
+        console.log("hhh");
+      },
       getMessage(){
         this.axios.get('/api/app/movie/get',{
         headers:{
           'Authorization':this.$store.state.user.id
         },
         params:{
-          'id':this.$store.state.search.movieId
+          'id':this.$store.state.search.relevant[this.$store.state.search.current]
         }
       }).then((res)=>{
         if(res.data.success == true){
@@ -450,8 +382,14 @@ checkEmail (rule, value, callback) {
           this.moviename = res.data.data.name;
           this.movieyear = res.data.data.year;
           this.movietype = res.data.data.genre;
-          
-          this.test = res.data.data.results
+          this.movieylocation = res.data.data.location.visit;
+          this.movierate = res.data.data.rating;
+          this.circle.backgroundImage = res.data.data.post;
+          this.movie1.backgroundImage = res.data.data.post;
+          this.backgroundurl = res.data.data.post;
+          this.moviepost = res.data.data.post;
+          console.log(res.data.data.post);
+          this.moviedirector = res.data.data.director;
         }
         else{
           window.alert(res.data.message)
@@ -463,6 +401,7 @@ checkEmail (rule, value, callback) {
   },
   mounted(){
     this.init();
+    this.getMessage();
   }
 };
 </script>
@@ -483,7 +422,7 @@ checkEmail (rule, value, callback) {
   height: auto;
 }
 .content{
-  background-image: url("../assets/back6.jpg");
+  background-color: #000;
   background-repeat: no-repeat;
   background-size: cover;
   min-width: 100%;
@@ -652,7 +591,7 @@ box-shadow: 0px 5px 10px 3px rgba(255, 255, 255, 0.3);
 }
 
 .mouse-wheel-item{
-  height:70px;
+  height:90px;
   color: aliceblue;
   width: 500px;
   font-size:16px;
