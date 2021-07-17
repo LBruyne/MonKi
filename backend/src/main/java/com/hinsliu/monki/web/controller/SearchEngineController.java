@@ -1,6 +1,7 @@
 package com.hinsliu.monki.web.controller;
 
 import com.hinsliu.monki.common.annotation.AuthToken;
+import com.hinsliu.monki.common.enums.SearchTypeEnum;
 import com.hinsliu.monki.domain.common.Page;
 import com.hinsliu.monki.domain.common.RpcResult;
 import com.hinsliu.monki.domain.query.RecommendQuery;

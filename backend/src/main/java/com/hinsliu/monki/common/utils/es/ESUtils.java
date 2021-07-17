@@ -7,13 +7,13 @@ package com.hinsliu.monki.common.utils.es;
  */
 public class ESUtils {
 
-    public static final Double NAME_BOOST = 0.25;
+    public static final Double NAME_BOOST = 0.5;
 
-    public static final Double VISITS_BOOST = 0.25;
+    public static final Double VISITS_BOOST = 0.5;
 
-    public static final Double MUSICS_BOOST = 0.25;
+    public static final Double MUSICS_BOOST = 0.5;
 
-    public static final Double SPECIFIED_BOOST = 1.0;
+    public static final Double SPECIFIED_BOOST = 2.0;
 
     public static final Double RATING_FACTOR = 0.1;
 

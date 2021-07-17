@@ -26,9 +26,9 @@ public enum SearchTypeEnum {
         this.val = val;
     }
 
-    public static SearchTypeEnum getType(int val) {
+    public static SearchTypeEnum getType(Integer val) {
         for (SearchTypeEnum type : SearchTypeEnum.values()) {
-            if (type.getVal() == val) {
+            if (type.getVal().equals(val)) {
                 return type;
             }
         }
