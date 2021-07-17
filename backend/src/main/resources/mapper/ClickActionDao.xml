@@ -13,19 +13,22 @@
     id, `uid`, mid, genre, `name`, `time`
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from t_click_action
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByUserID" resultType="com.hinsliu.monki.domain.model.ClickActionDO">
+    select mid from t_click_action where uid = #{id,jdbcType=BIGINT} order by time desc limit 0,10
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from t_click_action
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.hinsliu.monki.domain.model.ClickActionDO" useGeneratedKeys="true">
-    insert into t_click_action (`uid`, mid, genre, 
+    insert into t_click_action (`uid`, mid, genre,
       `name`, `time`)
-    values (#{uid,jdbcType=BIGINT}, #{mid,jdbcType=VARCHAR}, #{genre,jdbcType=VARCHAR}, 
+    values (#{uid,jdbcType=BIGINT}, #{mid,jdbcType=VARCHAR}, #{genre,jdbcType=VARCHAR},
       #{name,jdbcType=VARCHAR}, #{time,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.hinsliu.monki.domain.model.ClickActionDO" useGeneratedKeys="true">
@@ -96,3 +99,107 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
+
+
+
+<!--        <?xml version="1.0" encoding="UTF-8"?>-->
+<!--<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">-->
+<!--<mapper namespace="com.hinsliu.monki.dal.ClickActionDao">-->
+<!--  <resultMap id="BaseResultMap" type="com.hinsliu.monki.domain.model.ClickActionDO">-->
+<!--    <id column="id" jdbcType="BIGINT" property="id" />-->
+<!--    <result column="uid" jdbcType="BIGINT" property="uid" />-->
+<!--    <result column="mid" jdbcType="VARCHAR" property="mid" />-->
+<!--    <result column="genre" jdbcType="VARCHAR" property="genre" />-->
+<!--    <result column="name" jdbcType="VARCHAR" property="name" />-->
+<!--    <result column="time" jdbcType="TIMESTAMP" property="time" />-->
+<!--  </resultMap>-->
+<!--  <sql id="Base_Column_List">-->
+<!--    id, `uid`, mid, genre, `name`, `time`-->
+<!--  </sql>-->
+<!--  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">-->
+<!--    select-->
+<!--    <include refid="Base_Column_List" />-->
+<!--    from t_click_action-->
+<!--    where id = #{id,jdbcType=BIGINT}-->
+<!--  </select>-->
+<!--  <select id="selectByUserID" resultType="com.hinsliu.monki.domain.model.ClickActionDO">-->
+<!--    select mid from t_click_action where uid = #{id,jdbcType=BIGINT} order by time desc limit 0,10-->
+<!--  </select>-->
+<!--  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">-->
+<!--    delete from t_click_action-->
+<!--    where id = #{id,jdbcType=BIGINT}-->
+<!--  </delete>-->
+<!--  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.hinsliu.monki.domain.model.ClickActionDO" useGeneratedKeys="true">-->
+<!--    insert into t_click_action (`uid`, mid, genre,-->
+<!--      `name`, `time`)-->
+<!--    values (#{uid,jdbcType=BIGINT}, #{mid,jdbcType=VARCHAR}, #{genre,jdbcType=VARCHAR},-->
+<!--      #{name,jdbcType=VARCHAR}, #{time,jdbcType=TIMESTAMP})-->
+<!--  </insert>-->
+<!--  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.hinsliu.monki.domain.model.ClickActionDO" useGeneratedKeys="true">-->
+<!--    insert into t_click_action-->
+<!--    <trim prefix="(" suffix=")" suffixOverrides=",">-->
+<!--      <if test="uid != null">-->
+<!--        `uid`,-->
+<!--      </if>-->
+<!--      <if test="mid != null">-->
+<!--        mid,-->
+<!--      </if>-->
+<!--      <if test="genre != null">-->
+<!--        genre,-->
+<!--      </if>-->
+<!--      <if test="name != null">-->
+<!--        `name`,-->
+<!--      </if>-->
+<!--      <if test="time != null">-->
+<!--        `time`,-->
+<!--      </if>-->
+<!--    </trim>-->
+<!--    <trim prefix="values (" suffix=")" suffixOverrides=",">-->
+<!--      <if test="uid != null">-->
+<!--        #{uid,jdbcType=BIGINT},-->
+<!--      </if>-->
+<!--      <if test="mid != null">-->
+<!--        #{mid,jdbcType=VARCHAR},-->
+<!--      </if>-->
+<!--      <if test="genre != null">-->
+<!--        #{genre,jdbcType=VARCHAR},-->
+<!--      </if>-->
+<!--      <if test="name != null">-->
+<!--        #{name,jdbcType=VARCHAR},-->
+<!--      </if>-->
+<!--      <if test="time != null">-->
+<!--        #{time,jdbcType=TIMESTAMP},-->
+<!--      </if>-->
+<!--    </trim>-->
+<!--  </insert>-->
+<!--  <update id="updateByPrimaryKeySelective" parameterType="com.hinsliu.monki.domain.model.ClickActionDO">-->
+<!--    update t_click_action-->
+<!--    <set>-->
+<!--      <if test="uid != null">-->
+<!--        `uid` = #{uid,jdbcType=BIGINT},-->
+<!--      </if>-->
+<!--      <if test="mid != null">-->
+<!--        mid = #{mid,jdbcType=VARCHAR},-->
+<!--      </if>-->
+<!--      <if test="genre != null">-->
+<!--        genre = #{genre,jdbcType=VARCHAR},-->
+<!--      </if>-->
+<!--      <if test="name != null">-->
+<!--        `name` = #{name,jdbcType=VARCHAR},-->
+<!--      </if>-->
+<!--      <if test="time != null">-->
+<!--        `time` = #{time,jdbcType=TIMESTAMP},-->
+<!--      </if>-->
+<!--    </set>-->
+<!--    where id = #{id,jdbcType=BIGINT}-->
+<!--  </update>-->
+<!--  <update id="updateByPrimaryKey" parameterType="com.hinsliu.monki.domain.model.ClickActionDO">-->
+<!--    update t_click_action-->
+<!--    set `uid` = #{uid,jdbcType=BIGINT},-->
+<!--      mid = #{mid,jdbcType=VARCHAR},-->
+<!--      genre = #{genre,jdbcType=VARCHAR},-->
+<!--      `name` = #{name,jdbcType=VARCHAR},-->
+<!--      `time` = #{time,jdbcType=TIMESTAMP}-->
+<!--    where id = #{id,jdbcType=BIGINT}-->
+<!--  </update>-->
+<!--</mapper>-->

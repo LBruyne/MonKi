@@ -17,7 +17,10 @@
     from t_search_action
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <select id="selectByUserID" resultType="com.hinsliu.monki.domain.model.SearchActionDO">
+      select <include refid="Base_Column_List" /> from t_search_action where uid = #{id,jdbcType=BIGINT} order by time desc limit 0,10
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from t_search_action
     where id = #{id,jdbcType=BIGINT}
   </delete>

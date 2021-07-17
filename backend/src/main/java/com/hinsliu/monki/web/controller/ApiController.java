@@ -39,7 +39,7 @@ public class ApiController {
     @ApiOperation(value = "离线召回")
     @RequestMapping(value = "/movie/recall", method = {RequestMethod.POST, RequestMethod.GET})
     public RpcResult recall() {
-        // searchEngineManager.recall();
+        searchEngineManager.recall();
         return RpcResult.successResult();
     }
 
