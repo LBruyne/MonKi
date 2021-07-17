@@ -3,8 +3,8 @@ export default{
         search:window.localStorage.getItem('search')?window.localStorage.getItem('search'):undefined,
         movieId:window.localStorage.getItem('movieId')?window.localStorage.getItem('movieId'):undefined,
         priority:window.localStorage.getItem('priority')?window.localStorage.getItem('priority'):0,
-        current:1,
-        relevant:[],
+        current:window.localStorage.getItem('current')?window.localStorage.getItem('current'):0,
+        relevant:window.localStorage.getItem('relevant')?window.localStorage.getItem('relevant'):[],
     },
     getters:{
         search:(state)=>{
@@ -42,6 +42,14 @@ export default{
         setPriority(state, priority){
             localStorage.setItem("priority",priority)
             state.priority=priority
+        },
+        setCurrent(state, current){
+            localStorage.setItem("current",current)
+            state.current=current
+        },
+        setRelevant(state, relevant){
+            localStorage.setItem("relevant",relevant)
+            state.relevant=relevant
         },
     },
     actions:{},
