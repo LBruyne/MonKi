@@ -10,7 +10,6 @@
     <div class="content">
     <div class="moviename">
           {{this.moviename}}
-          <a-icon type="caret-right" :style="{ fontSize: '40px', color: '#ffffff' , marginLeft: '50px' ,position:'absolute' }" @click="next()"/>
     </div>
 
     <div class="search">
@@ -181,7 +180,10 @@
       <div class="wrapper1">
         <div class="mouse-wheel-wrapper" ref="scroll3">
           <div class="mouse-wheel-content">
-            <div class="mouse-wheel-item2" v-for="n in 50" :key="n">
+            <div class="mouse-wheel-item2" v-for="(item,n) in this.imagelist" :key="n">
+              <img :src="getimage(n)" :style="{width: '100%',
+    height: '100%',
+    objectFit:'cover'}">
             </div>
           </div>
         </div>
@@ -270,6 +272,9 @@ export default {
       getbackground1:function(){
         this.circle.backgroundImage = 'url(' + this.backgroundurl + ')';
         return this.circle;
+      },
+      getimage(num){
+        return this.imagelist[num];
       },
       sendcode() {
         const TIME_COUNT = 60
@@ -471,11 +476,11 @@ checkEmail (rule, value, callback) {
     vertical-align: top;
     word-spacing:0;
     float: right;
-    margin-right: 3.5%;
-    margin-top: -13%;
+    margin-right: 10%;
+    margin-top: -20%;
     top: 0;
     width: 39%;
-    height: 260px;
+    height: auto;
     line-height: 20px;
     opacity: 0.5;
     border-radius: 20px;
@@ -491,26 +496,25 @@ checkEmail (rule, value, callback) {
     margin-left: 4%;
     vertical-align: top;
     margin-top: 40px;
-    height: 307px;
+    height: auto;
     margin-top: 0px;
     display: inline-block;
     text-align: left;
 }
 
 .card .text-box .Movietype{
+    margin-top: 30px;
+    top: 600px;
     left: 411px;
-    top: 260px;
     width: 186px;
-    height: 50px;
     color: rgba(255, 255, 255, 100);
     font-size: 28px;
     text-align: left;
+    line-height: 150%;
 }
 .card .text-box .Movietime{
     left: 411px;
-    top: 213px;
     width: 234px;
-    height: 50px;
     color: rgba(255, 255, 255, 100);
     font-size: 28px;
     text-align: left;
@@ -518,32 +522,32 @@ checkEmail (rule, value, callback) {
 
 .card .text-box .Movielocation{
     left: 411px;
-    top: 308px;
+    margin-top:40px;
     width: 409px;
-    height: 50px;
     color: rgba(255, 255, 255, 100);
     font-size: 28px;
     text-align: left;
+    line-height: 150%;
 }
 
 .card .text-box .Movielanguage{
     left: 411px;
-    top: 308px;
     width: 409px;
     height: 50px;
     color: rgba(255, 255, 255, 100);
     font-size: 28px;
     text-align: left;
+    margin-top: 40px;
 }
 
 .card .text-box .Moviedirector{
     left: 411px;
-    top: 404px;
-    width: 175px;
+    width: 409px;
     height: 50px;
     color: rgba(255, 255, 255, 100);
     font-size: 28px;
     text-align: left;
+    line-height: 150%;
 }
 
 .wrapper{
@@ -586,10 +590,6 @@ box-shadow: 0px 5px 10px 3px rgba(255, 255, 255, 0.3);
   margin-bottom: 10%;
   border-radius: 6px;
   opacity: 0.5;
-  background-image: url('../assets/back3.jpg');
-  background-size:cover;
-  background-position: center center;
-  background-repeat: no-repeat;
   box-shadow: 0px 2px 0px 0px rgba(255, 255, 255, 0.3);
 }
 
