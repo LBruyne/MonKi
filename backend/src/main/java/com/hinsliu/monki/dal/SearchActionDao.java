@@ -2,6 +2,8 @@ package com.hinsliu.monki.dal;
 
 import com.hinsliu.monki.domain.model.SearchActionDO;
 
+import java.util.List;
+
 public interface SearchActionDao {
     int deleteByPrimaryKey(Long id);
 
@@ -14,4 +16,6 @@ public interface SearchActionDao {
     int updateByPrimaryKeySelective(SearchActionDO record);
 
     int updateByPrimaryKey(SearchActionDO record);
+
+    List<SearchActionDO> selectByUserID(Long id);
 }

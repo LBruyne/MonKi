@@ -132,7 +132,7 @@
       <div class="resultItems" v-if="loading == false">
         <!-- 卡片 -->
         <!-- 这个onmouseover前面加一个冒号就可以了，但是我不知道是实现什么功能的，而且已进入界面就冒出十几个alert -->
-        <div class="card" v-for="(item, i) in test" :key=i onmouseover="changebackground()">
+        <div class="card" v-for="(item, i) in test" :key=i  @click="clickTop(item.id, i)">
           <div class="post">
             <img
               slot="cover"
@@ -144,9 +144,9 @@
           <div class="filmtext">
             <div class="moviename">{{item.name}}</div>
             <div class="rating">Rating: <a style="color: aqua;opacity:0.6;padding-right:10px">{{item.rating}}</a></div>
-            <div class="year">Year: <a style="color: aqua;opacity:0.6;padding-right:10px">{{item.rating}}</a></div>
+            <div class="year">Year: <a style="color: aqua;opacity:0.6;padding-right:10px">{{item.year}}</a></div>
             <div class="type">Type: <a style="color: aqua;opacity:0.6;padding-right:10px" v-for="(ty,j) in item.genre" :key=j>{{ty}}</a></div>
-            <div class="director">Director:  <a style="color: aqua;opacity:0.6;padding-right:10px">{{item.rating}}</a></div>
+            <div class="director">Director:  <a style="color: aqua;opacity:0.6;padding-right:10px" v-for="(ty,j) in item.director" :key=j>{{ty}}</a></div>
             <div class="music">Musics:  <a style="color: aqua;opacity:0.6;padding-right:10px;" v-for="(ty,j) in item.music" :key=j>{{ty}}</a></div>
             <div class="location">Locations: <a style="color: aqua;opacity:0.6;padding-right:10px" v-for="(ty,j) in item.visit" :key=j>{{ty}}</a></div>
           </div>
@@ -158,7 +158,7 @@
         </div>
       </div>
       <!-- 小小动画 -->
-      <div class="resultItems2" v-if="loading == true">
+      <div class="resultItems2" v-show="loading == true">
         <div class="person">
           <div class="person_head"></div>
           <div class="person_body">
@@ -174,9 +174,9 @@
       <!-- 右侧热搜 -->
       <div class="hotItems" v-if="loading == false">
         <div class="list">
-          <div class="hotTitle" style="text-align:center;margin-top:20px;font-size:30px;color:#00FFFF">Monki Top Search</div>
-          <div class="hotItem" style="margin-left:30px;padding-top:20px;margin-right:30px;overflow:hidden;white-space:nowrap" v-for="(item, k) in test2" :key=k
-            @click="clickTop(item.id)">
+          <div class="hotTitle" style="text-align:center;margin-top:20px;font-size:30px;color:aliceblue;">MONKI</div>
+          <div class="hotItem" style="margin-left:30px;padding-top:18.5px;margin-right:30px;overflow:hidden;white-space:nowrap;line-height:22px" v-for="(item, k) in test2" :key=k
+            @click="clickTop(item.id, k)">
           {{item.name}}</div>
         </div>
       </div>
@@ -384,9 +384,11 @@ export default {
     },
     //获取数据接口，第一次进入该页面mounted的时候页数是1，其他时候点击分页的时候会获取页码
     onChange(pageNumber) {
-      console.log('Page: ', pageNumber);
       this.loading = true
-      console.log(this.loading)
+      this.play()
+      setInterval(this.play(),400)
+      console.log('Page: ', pageNumber);
+      setTimeout(this.play(),1)
       // TODO: 获取简略信息的接口的测试
       this.axios.get('/api/app/engine/search',{
         headers:{
@@ -404,6 +406,14 @@ export default {
         console.log(res.data)
         if(res.data.success == true){
           this.test = res.data.data.results
+          this.ipagination.total = res.data.data.count
+          this.ipagination.current = pageNumber
+          var relevant = []
+          for(let i = 0;i<res.data.data.results.length;i++){
+            relevant.push(res.data.data.results[i].id)
+          }
+          this.$store.state.search.relevant = relevant
+          console.log(this.$store.state.search.relevant)
         }
         else{
           window.alert(res.data.message)
@@ -418,7 +428,6 @@ export default {
       console.log(this.text)
       console.log(this.$store.state.search.search)
       this.$router.push('/search')
-      this.ipagination.current = 1
       location.reload()
     },
     //进入该界面的时候就调用该接口获得热搜榜
@@ -427,7 +436,7 @@ export default {
       // TODO: 获取热搜榜的接口的测试
       this.axios.get('/api/app/engine/recommend',{
         headers:{
-          'token':this.$store.state.user.id
+          'Authorization':this.$store.state.user.id
         },
         params:{
           'page':1,
@@ -437,6 +446,12 @@ export default {
         console.log(res.data)
         if(res.data.success == true){
           this.test2 = res.data.data.results
+          var relevant = []
+          for(let i = 0;i<res.data.data.results.length;i++){
+            relevant.push(res.data.data.results[i].id)
+          }
+          this.$store.state.search.relevant = relevant
+
           for(let i =0;i<this.test2.length;i++){
             this.test2[i].name = String(i+1)+ ". "+ this.test2[i].name
           }
@@ -450,10 +465,12 @@ export default {
         })
     },
     //点击榜单的内容跳转到对应的详情界面，详情界面的加载逻辑，也是获取全局state的movieId，然后一进入页面mounted再调用接口
-    clickTop(id)
+    clickTop(id, i)
     {
+      this.$store.state.search.current = i;
       this.$store.commit('setMovieId',id)
       this.$router.push('/result')
+      console.log(this.$store.state.search.current)
     },
     play() {
       this.$anime
@@ -478,7 +495,7 @@ export default {
     console.log(this.loading)
     setTimeout(this.getTop(),1000)
     setTimeout(this.onChange(1),1000)
-    setTimeout(this.play(),1)
+    setInterval(this.play(),400)
     
   },
 };
@@ -629,14 +646,18 @@ div /deep/ .ant-modal-body{
   width: 65%;
 }
 .card .filmtext .moviename{
-  padding-top:30px;
+  overflow:hidden;
+  line-height: 40px;
+  white-space:nowrap;
+  padding-top:20px;
   font-size: 30px;
   color: aliceblue;
   float: left;
   width: 70%;
 } 
 .card .filmtext .rating{
-  padding-top:30px;
+  padding-top:20px;
+  line-height: 40px;
   font-size: 20px;
   color: aliceblue;
   float: right;
@@ -662,11 +683,13 @@ div /deep/ .ant-modal-body{
   padding-top:15px;
   overflow:hidden;
   white-space:nowrap;
+  margin-right: 30px;
   font-size: 20px;
   color: aliceblue;
 } 
 .card .filmtext .location{
   padding-top:15px;
+  margin-right:30px;
   font-size: 20px;
   overflow:hidden;
   white-space:nowrap;
@@ -687,10 +710,12 @@ div /deep/ .ant-modal-body{
     border-radius: 20px;
     box-shadow: 0px 2px 9px 5px rgba(0, 0, 0, 0.4);
     z-index: 100;
-    background-image: url("../assets/monki.png");
-    background-size: cover;
-    background-position: center center;
-    background-color: rgba(0,139,139, 0.6);
+    background-image: url("../assets/monki2.png");
+    background-size:220px 200px;
+    background-repeat:no-repeat;
+    background-position:90% 90%;
+    background-origin:content-box;
+    background-color: rgba(0,139,139, 0.3);
     background-blend-mode: darken;
 }
 .list:hover{
