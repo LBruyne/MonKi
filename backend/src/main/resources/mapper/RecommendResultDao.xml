@@ -1,82 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hinsliu.monki.dal.RecommendResultDao">
-  <resultMap id="BaseResultMap" type="com.hinsliu.monki.domain.model.RecommendResultDO">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="uid" jdbcType="BIGINT" property="uid" />
-    <result column="from" jdbcType="VARCHAR" property="from" />
-    <result column="to" jdbcType="VARCHAR" property="to" />
-    <result column="correlation" jdbcType="DOUBLE" property="correlation" />
-  </resultMap>
-  <sql id="Base_Column_List">
+    <resultMap id="BaseResultMap" type="com.hinsliu.monki.domain.model.RecommendResultDO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="uid" jdbcType="BIGINT" property="uid"/>
+        <result column="from" jdbcType="VARCHAR" property="from"/>
+        <result column="to" jdbcType="VARCHAR" property="to"/>
+        <result column="correlation" jdbcType="DOUBLE" property="correlation"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     id, `uid`, `from`, `to`, correlation
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from t_recommend_result
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_recommend_result
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="selectByUserId" resultType="com.hinsliu.monki.domain.model.RecommendResultDO">
+        select
+        <include refid="Base_Column_List"/>
+        from t_recommend_result
+        where uid = #{userId, jdbcType=BIGINT}
+        order by correlation desc
+        limit 0, 10
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from t_recommend_result
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.hinsliu.monki.domain.model.RecommendResultDO" useGeneratedKeys="true">
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.hinsliu.monki.domain.model.RecommendResultDO"
+            useGeneratedKeys="true">
     insert into t_recommend_result (`uid`, `from`, `to`, 
       correlation)
     values (#{uid,jdbcType=BIGINT}, #{from,jdbcType=VARCHAR}, #{to,jdbcType=VARCHAR}, 
       #{correlation,jdbcType=DOUBLE})
   </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.hinsliu.monki.domain.model.RecommendResultDO" useGeneratedKeys="true">
-    insert into t_recommend_result
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="uid != null">
-        `uid`,
-      </if>
-      <if test="from != null">
-        `from`,
-      </if>
-      <if test="to != null">
-        `to`,
-      </if>
-      <if test="correlation != null">
-        correlation,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="uid != null">
-        #{uid,jdbcType=BIGINT},
-      </if>
-      <if test="from != null">
-        #{from,jdbcType=VARCHAR},
-      </if>
-      <if test="to != null">
-        #{to,jdbcType=VARCHAR},
-      </if>
-      <if test="correlation != null">
-        #{correlation,jdbcType=DOUBLE},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hinsliu.monki.domain.model.RecommendResultDO">
-    update t_recommend_result
-    <set>
-      <if test="uid != null">
-        `uid` = #{uid,jdbcType=BIGINT},
-      </if>
-      <if test="from != null">
-        `from` = #{from,jdbcType=VARCHAR},
-      </if>
-      <if test="to != null">
-        `to` = #{to,jdbcType=VARCHAR},
-      </if>
-      <if test="correlation != null">
-        correlation = #{correlation,jdbcType=DOUBLE},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.hinsliu.monki.domain.model.RecommendResultDO">
+    <insert id="insertSelective" keyColumn="id" keyProperty="id"
+            parameterType="com.hinsliu.monki.domain.model.RecommendResultDO" useGeneratedKeys="true">
+        insert into t_recommend_result
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uid != null">
+                `uid`,
+            </if>
+            <if test="from != null">
+                `from`,
+            </if>
+            <if test="to != null">
+                `to`,
+            </if>
+            <if test="correlation != null">
+                correlation,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uid != null">
+                #{uid,jdbcType=BIGINT},
+            </if>
+            <if test="from != null">
+                #{from,jdbcType=VARCHAR},
+            </if>
+            <if test="to != null">
+                #{to,jdbcType=VARCHAR},
+            </if>
+            <if test="correlation != null">
+                #{correlation,jdbcType=DOUBLE},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hinsliu.monki.domain.model.RecommendResultDO">
+        update t_recommend_result
+        <set>
+            <if test="uid != null">
+                `uid` = #{uid,jdbcType=BIGINT},
+            </if>
+            <if test="from != null">
+                `from` = #{from,jdbcType=VARCHAR},
+            </if>
+            <if test="to != null">
+                `to` = #{to,jdbcType=VARCHAR},
+            </if>
+            <if test="correlation != null">
+                correlation = #{correlation,jdbcType=DOUBLE},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hinsliu.monki.domain.model.RecommendResultDO">
     update t_recommend_result
     set `uid` = #{uid,jdbcType=BIGINT},
       `from` = #{from,jdbcType=VARCHAR},

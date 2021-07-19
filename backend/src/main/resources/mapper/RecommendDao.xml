@@ -19,7 +19,10 @@
     delete from t_recommend
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.hinsliu.monki.domain.model.RecommendDO" useGeneratedKeys="true">
+    <delete id="deleteAll">
+      truncate table t_recommend
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.hinsliu.monki.domain.model.RecommendDO" useGeneratedKeys="true">
     insert into t_recommend (`uid`, movies)
     values (#{uid,jdbcType=BIGINT}, #{movies,jdbcType=VARCHAR})
   </insert>

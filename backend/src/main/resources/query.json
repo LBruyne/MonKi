@@ -1,31 +1,67 @@
 {
-  "_source": ,
+  "_source": "*",
   "from": 0,
   "size": 20,
+  "explain": true,
   "query": {
-
-  }
-}
-
-{
-  "settings" : {
-    "number_of_shards" : 5,
-    "number_of_replicas" : 0
-  },
-  "mappings": {
-    "properties": {
-      "title":{"type":"text","analyzer": "english"},
-      "tagline":{"type":"text","analyzer": "english"},
-      "release_date":{"type":"date",        "format": "8yyyy/MM/dd||yyyy/M/dd||yyyy/MM/d||yyyy/M/d"},
-      "popularity":{"type":"double"},
-      "cast":{
-        "type":"object",
-        "properties":{
-          "character":{"type":"text","analyzer":"standard"},
-          "name":{"type":"text","analyzer":"standard"}
+    "function_score": {
+      "query": {
+        "bool": {
+          "should": [
+            {
+              "match": {
+                "name": {
+                  "query": "Aven Berlin",
+                  "fuzziness": "AUTO",
+                  "boost": 0.25
+                }
+              }
+            },
+            {
+              "match": {
+                "visits": {
+                  "query": "Aven Berlin",
+                  "fuzziness": "AUTO",
+                  "boost": 0.25
+                }
+              }
+            },
+            {
+              "match": {
+                "musics": {
+                  "query": "Aven Berlin",
+                  "fuzziness": "AUTO",
+                  "boost": 0.25
+                }
+              }
+            }
+          ]
         }
       },
-      "overview":{"type":"text","analyzer": "english"}
+      "functions": [
+        {
+          "field_value_factor": {
+            "field": "rating",
+            "factor": 0.05
+          }
+        },
+        {
+          "field_value_factor": {
+            "field": "popularity",
+            "factor": 0.05,
+            "modifier": "log1p"
+          }
+        }
+      ],
+      "score_mode": "sum",
+      "boost_mode": "multiply"
     }
-  }
+  },
+  "sort": [
+    {
+      "_score": {
+        "order": "desc"
+      }
+    }
+  ]
 }

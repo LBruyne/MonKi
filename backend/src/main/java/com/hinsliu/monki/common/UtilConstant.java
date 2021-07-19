@@ -32,4 +32,5 @@ public class UtilConstant {
 
     // Redis port
     public static Integer redisPort = 6379;
+
 }

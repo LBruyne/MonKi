@@ -42,11 +42,10 @@ public class SearchEngineController {
     @ApiOperation(value = "推荐服务，返回推荐的电影列表")
     @RequestMapping(value = "/recommend", method = {RequestMethod.GET})
     public RpcResult<Page<MovieMetaDTO>> recommend(@ModelAttribute @Validated RecommendQuery query) {
-        // return RpcResult.successResult(searchEngineManager.recommend(query));
-
-        SearchQuery query1 = new SearchQuery();
-        query1.setKeyword("Avenger");
-        return RpcResult.successResult(searchEngineManager.search(query1));
+        return RpcResult.successResult(searchEngineManager.recommend(query));
+//        SearchQuery query1 = new SearchQuery();
+//        query1.setKeyword("Avenger");
+//        return RpcResult.successResult(searchEngineManager.search(query1));
     }
 
 }

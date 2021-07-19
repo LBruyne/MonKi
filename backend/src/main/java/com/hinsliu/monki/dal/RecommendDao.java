@@ -14,4 +14,6 @@ public interface RecommendDao {
     int updateByPrimaryKeySelective(RecommendDO record);
 
     int updateByPrimaryKey(RecommendDO record);
+
+    int deleteAll();
 }

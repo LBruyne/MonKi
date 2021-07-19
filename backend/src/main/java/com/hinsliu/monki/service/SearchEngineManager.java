@@ -2,9 +2,11 @@ package com.hinsliu.monki.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hinsliu.monki.common.UtilConstant;
 import com.hinsliu.monki.common.enums.ErrorCodeEnum;
 import com.hinsliu.monki.common.enums.SearchTypeEnum;
 import com.hinsliu.monki.common.exception.BusinessException;
+import com.hinsliu.monki.common.utils.copy.CopyUtils;
 import com.hinsliu.monki.common.utils.es.ESUtils;
 import com.hinsliu.monki.common.utils.time.DateTimeUtil;
 import com.hinsliu.monki.dal.*;
@@ -14,6 +16,7 @@ import com.hinsliu.monki.domain.model.*;
 import com.hinsliu.monki.domain.query.RecommendQuery;
 import com.hinsliu.monki.domain.query.SearchQuery;
 import com.hinsliu.monki.domain.view.MovieMetaDTO;
+import io.swagger.models.auth.In;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -54,17 +57,81 @@ public class SearchEngineManager extends BaseManager {
     private MovieFeatureDao movieFeatureDao;
 
     @Resource
+    private ClickActionDao clickActionDao;
+
+    @Resource
+    private RecommendResultDao recommendResultDao;
+
+    @Resource
     private UserDao userDao;
 
     @Resource
     private RecommendDao recommendDao;
 
-    private static final String METHOD = "GET";
+    public Page<MovieMetaDTO> recommend(RecommendQuery query) {
+        List<MovieMetaDTO> result = new ArrayList<>();
 
-    private static final String ENDPOINT = "/monki/_search";
-    @Resource
-    private ClickActionDao clickActionDao;
+        // 分页验证
+        PageParam.verify(query);
 
+        // 如果没有登录，返回热搜结果
+        // 如果登录了，返回重排结果
+        if (getUserId() == null) {
+            result = getHotSearchList();
+        } else {
+            result = getRerankingList(getUserId());
+        }
+
+        return new Page<>(query.getPage(), query.getPageSize(), result.size(), result);
+    }
+
+    private List<MovieMetaDTO> getRerankingList(Long userId) {
+        List<RecommendResultDO> recommendResultDOList = recommendResultDao.selectByUserId(userId);
+
+        // 如果不存在该用户的重排记录，返回热搜
+        if (recommendResultDOList.size() == 0) {
+            return getHotSearchList();
+        } else {
+            List<String> ids = recommendResultDOList.stream().map(RecommendResultDO::getTo).collect(Collectors.toList());
+            return searchMongo(ids);
+        }
+    }
+
+    private List<MovieMetaDTO> getHotSearchList() {
+        List<ClickActionDO> hotClickList = clickActionDao.selectRecentlyRecord(500);
+
+        // 统计每个电影被点击的数量
+        Map<String, Integer> movieClickMapper = new HashMap<>();
+        for (ClickActionDO clickAction : hotClickList) {
+            if (movieClickMapper.containsKey(clickAction.getMid())) {
+                movieClickMapper.replace(clickAction.getMid(), movieClickMapper.get(clickAction.getMid()) + 1);
+            } else {
+                movieClickMapper.put(clickAction.getMid(), 1);
+            }
+        }
+        // 按照被点击的数量排序
+        Map<String, Integer> sortedMapper = new HashMap<>();
+        movieClickMapper.entrySet().stream()
+                .sorted((p1, p2) -> p2.getValue().compareTo(p1.getValue()))
+                .collect(Collectors.toList())
+                .forEach(elem -> sortedMapper.put(elem.getKey(), elem.getValue()));
+
+        List<String> ids = new ArrayList<>(sortedMapper.keySet());
+        log.info("获取热搜电影列表:{}", ids);
+
+        // 如果数量较少，还需要随即进行补充
+        Random random = new Random();
+        List<MovieFeatureDO> movies = movieFeatureDao.selectAll();
+        while (ids.size() < UtilConstant.DEFAULT_PAGE_SIZE) {
+            String next = movies.get(random.nextInt()).getMongoid();
+            if (!ids.contains(next)) {
+                log.info("电影数量较少，随机获取热搜电影{}", next);
+                ids.add(next);
+            }
+        }
+
+        return searchMongo(ids);
+    }
 
     public Page<MovieMetaDTO> search(SearchQuery query) {
         // 分页验证
@@ -103,60 +170,6 @@ public class SearchEngineManager extends BaseManager {
         } else {
             log.warn("插入用户搜索记录失败，搜索关键字{}，类别{}", kw, type.getName());
             throw new BusinessException(ErrorCodeEnum.FAIL.getCode(), "插入用户搜索记录失败");
-        }
-    }
-
-    public Page<MovieMetaDTO> recommend(RecommendQuery query) {
-        // 分页验证
-        PageParam.verify(query);
-
-        return null;
-    }
-
-    public void recall() {
-//        for eachUser:
-//             基于近10次点击记录，每次取前3  =》   《=30条
-//             基于近10次搜索记录，每次取前2  =》  《=20条
-//             去重复
-//             random补至50条
-//         存到数据库里去
-        List<UserDO> userls = userDao.selectAllUser();
-        List<MovieFeatureDO> movieID = movieFeatureDao.selectAll();
-        int len = movieID.size();
-        for (UserDO user : userls) {
-//            查找近10次点击记录
-            List<ClickActionDO> latest10Clicks = clickActionDao.selectByUserID(user.getId());
-
-//            查找最近10次搜索记录
-            List<SearchActionDO> latest10searches = searchActionDao.selectByUserID(user.getId());
-
-            Set<String> recall = new HashSet<>(100);
-
-            latest10Clicks.forEach(keywordToSearch -> recall.addAll(searchES(keywordToSearch.getName(), SearchTypeEnum.MOVIE, 0, 3).getResults()));
-
-            latest10searches.forEach(keywordToSearch -> recall.addAll(searchES(keywordToSearch.getContent(), SearchTypeEnum.getType(keywordToSearch.getType()), 0, 2).getResults()));
-
-            Random generator = new Random();
-//            id 的base
-            while (recall.size() < 50) {
-                int ofs = generator.nextInt(len);
-                recall.add(movieID.get(ofs).getMongoid());
-            }
-
-            RecommendDO recomm = new RecommendDO();
-            recomm.setUid(user.getId());
-            recomm.setMovies(String.join(";", recall));
-
-            int affectCount = recommendDao.insert(recomm);
-//            not necessarily insert
-//            todo change to update
-
-            if (affectCount > 0) {
-                log.info("召回算法结束，为用户id{}进行召回，插入{}个推荐", user.getId(), recall.size());
-            } else {
-                log.warn("召回算法结束，为用户id{}进行召回，插入记录失败", user.getId());
-                throw new BusinessException(ErrorCodeEnum.FAIL.getCode(), "插入用户召回失败");
-            }
         }
     }
 
@@ -263,6 +276,57 @@ public class SearchEngineManager extends BaseManager {
 
         private Integer count;
 
+    }
+
+    public void recall() {
+        // 清空召回数据库
+        if(recommendDao.deleteAll() == 0) {
+            log.info("成功清除召回数据库");
+        } else {
+            log.warn("召回数据库为空或清楚失败");
+        }
+
+//        for eachUser:
+//             基于近10次点击记录，每次取前3  =》   《=30条
+//             基于近10次搜索记录，每次取前2  =》  《=20条
+//             去重复
+//             random补至50条
+//         存到数据库里去
+        List<UserDO> userls = userDao.selectAllUser();
+        List<MovieFeatureDO> movieID = movieFeatureDao.selectAll();
+        int len = movieID.size();
+        for (UserDO user : userls) {
+//            查找近10次点击记录
+            List<ClickActionDO> latest10Clicks = clickActionDao.selectByUserID(user.getId());
+
+//            查找最近10次搜索记录
+            List<SearchActionDO> latest10searches = searchActionDao.selectByUserID(user.getId());
+
+            Set<String> recall = new HashSet<>(100);
+
+            latest10Clicks.forEach(keywordToSearch -> recall.addAll(searchES(keywordToSearch.getName(), SearchTypeEnum.MOVIE, 0, 3).getResults()));
+
+            latest10searches.forEach(keywordToSearch -> recall.addAll(searchES(keywordToSearch.getContent(), SearchTypeEnum.getType(keywordToSearch.getType()), 0, 2).getResults()));
+
+            Random generator = new Random();
+//            id 的base
+            while (recall.size() < 50) {
+                int ofs = generator.nextInt(len);
+                recall.add(movieID.get(ofs).getMongoid());
+            }
+
+            RecommendDO recomm = new RecommendDO();
+            recomm.setUid(user.getId());
+            recomm.setMovies(String.join(";", recall));
+
+            int affectCount = recommendDao.insert(recomm);
+            if (affectCount > 0) {
+                log.info("召回算法结束，为用户id{}进行召回，插入{}个推荐", user.getId(), recall.size());
+            } else {
+                log.warn("召回算法结束，为用户id{}进行召回，插入记录失败", user.getId());
+                throw new BusinessException(ErrorCodeEnum.FAIL.getCode(), "插入用户召回失败");
+            }
+        }
     }
 
 }
