@@ -474,10 +474,11 @@ export default {
 
 .card{
     vertical-align: top;
+    position: absolute;
     word-spacing:0;
     float: right;
-    margin-right: 10%;
-    margin-top: -20%;
+    margin-left: 50%;
+    margin-top: 10%;
     top: 0;
     width: 39%;
     height: auto;
@@ -562,7 +563,7 @@ export default {
   width: 40%;
   margin-top: 2%;
   height: 400px;
-  margin-right: 2%;
+  margin-left: 0%;
   display: inline-block;
 }
 
