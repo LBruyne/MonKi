@@ -209,7 +209,7 @@ export default {
       text:this.$store.state.search.search,
       isLogin: this.$store.state.user.email,
       relevant:this.$store.state.search.relevant,
-      current:Number(this.$store.state.search.current),
+      current:this.$store.state.search.current,
       form: this.$form.createForm(this),
       data:[],
       loading: false,
@@ -310,7 +310,7 @@ export default {
         });
       },
 
-checkEmail (rule, value, callback) {
+    checkEmail (rule, value, callback) {
       const regex = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/
       if (!regex.test(value)) {
         callback('Please Enter the Valid Email!')
@@ -369,7 +369,7 @@ checkEmail (rule, value, callback) {
       logoutNo(){
         this.visible_logout = false
       },
-      next:function(){
+      next(){
         if(parseInt(this.current)<this.relevant.length-1)
           this.$store.commit('setCurrent',parseInt(this.current)+1)
         else
@@ -414,7 +414,7 @@ checkEmail (rule, value, callback) {
     this.init();
     
     this.getMessage();
-    
+    console.log(localStorage.getItem("current"))
     console.log(this.relevant)
     console.log(this.current)
     console.log(this.relevant[this.current])

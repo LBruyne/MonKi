@@ -132,7 +132,7 @@
       <div class="resultItems" v-if="loading == false">
         <!-- 卡片 -->
         <!-- 这个onmouseover前面加一个冒号就可以了，但是我不知道是实现什么功能的，而且已进入界面就冒出十几个alert -->
-        <div class="card" v-for="(item, i) in test" :key=i  @click="clickTop(item.id, i)">
+        <div class="card" v-for="(item, i) in test" :key=i  @click="clickSearch(item.id, i)">
           <div class="post">
             <img
               slot="cover"
@@ -224,6 +224,8 @@ export default {
       test,//搜索结果数据
       test2,//热搜数据
       isLogin: this.$store.state.user.email,
+      relevant_search: this.$store.state.search.relevant,
+      relevant_top:this.$store.state.search.relevant,
       form: this.$form.createForm(this),
       //分页相关信息
       ipagination:{
@@ -412,8 +414,7 @@ export default {
           for(let i = 0;i<res.data.data.results.length;i++){
             relevant.push(res.data.data.results[i].id)
           }
-          this.$store.state.search.relevant = relevant
-          console.log(this.$store.state.search.relevant)
+          this.relevant_search = relevant
         }
         else{
           window.alert(res.data.message)
@@ -450,7 +451,7 @@ export default {
           for(let i = 0;i<res.data.data.results.length;i++){
             relevant.push(res.data.data.results[i].id)
           }
-          this.$store.state.search.relevant = relevant
+          this.relevant_top = relevant
 
           for(let i =0;i<this.test2.length;i++){
             this.test2[i].name = String(i+1)+ ". "+ this.test2[i].name
@@ -467,7 +468,16 @@ export default {
     //点击榜单的内容跳转到对应的详情界面，详情界面的加载逻辑，也是获取全局state的movieId，然后一进入页面mounted再调用接口
     clickTop(id, i)
     {
-      this.$store.state.search.current = i;
+      this.$store.commit('setRelevant',this.relevant_top)
+      this.$store.commit('setCurrent',i)
+      this.$store.commit('setMovieId',id)
+      this.$router.push('/result')
+      console.log(this.$store.state.search.current)
+    },
+    clickSearch(id, i)
+    {
+      this.$store.commit('setRelevant',this.relevant_search)
+      this.$store.commit('setCurrent',i)
       this.$store.commit('setMovieId',id)
       this.$router.push('/result')
       console.log(this.$store.state.search.current)
