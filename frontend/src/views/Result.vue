@@ -161,9 +161,13 @@
         </div>        
       </div>
     </div>
+  </div>
 
-      <div class="Movietext" :style="{ width: '10%', float:'right', marginTop:'10%', fontSize:'30px',color:'#ffffff'}" >
+  <div class="textcontent">
+      <div class="Movietext" :style="{marginBottom:'10%',position:'absolute',left:'46%',fontSize:'30px',color:'#ffffff'}" >
         Location
+      </div>
+      <div class="Movietext" :style="{height:'70px',position:'absolute',left:'50%',fontSize:'30px',color:'#ffffff'}" >
       </div>
       <div class="picture">
       <div class="wrapper">
@@ -428,6 +432,12 @@ export default {
   background-color:black;
   filter:brightness(1);
 }
+.textcontent{
+  background-color: black;
+  margin-top: 5%;
+  height:auto;
+  width: 100%;
+}
 .article{
   background-color: black;
   height:auto;
@@ -561,7 +571,7 @@ export default {
 
 .wrapper1{
   width: 40%;
-  margin-top: 2%;
+  margin-top: 10%;
   height: 400px;
   margin-left: 0%;
   display: inline-block;
@@ -646,6 +656,7 @@ box-shadow: 0px 5px 10px 3px rgba(255, 255, 255, 0.3);
 } 
 
 .poster{
+  right:0%;
   height:800px;
   width: 650px;
   float: right;
