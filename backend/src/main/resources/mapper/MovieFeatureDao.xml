@@ -15,7 +15,13 @@
     from t_movie_feature
     where sid = #{sid,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <select id="selectAll" resultType="com.hinsliu.monki.domain.model.MovieFeatureDO">
+      select
+      sid, mongoID
+      from t_movie_feature
+      order by sid asc
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_movie_feature
     where sid = #{sid,jdbcType=INTEGER}
   </delete>
