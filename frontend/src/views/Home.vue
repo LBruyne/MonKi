@@ -7,8 +7,6 @@
       <div id="div3"><a href="https://map.baidu.com/" style="color: white">Location</a></div>
       <div id="div4"><a href="https://music.163.com/" style="color: white">Music</a></div>
       <div id="div5">More</div>
-      <div id="div6"><a href="#/search" >search</a></div>
-      <div id="div7"><a href="#/result" >result</a></div>
                   <a-icon
               type="user"
               size="large"
@@ -414,6 +412,8 @@ export default {
     this.init();
     console.log(this.movie)
     this.getTop()
+    console.log(this.test)
+    console.log(this.movie)
   }
 };
 </script>
