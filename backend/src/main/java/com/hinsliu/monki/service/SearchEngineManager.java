@@ -130,7 +130,7 @@ public class SearchEngineManager extends BaseManager {
             }
         }
 
-        return searchMongo(ids);
+        return searchMongo(ids.subList(0, UtilConstant.DEFAULT_PAGE_SIZE));
     }
 
     public Page<MovieMetaDTO> search(SearchQuery query) {
