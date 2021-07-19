@@ -19,7 +19,10 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="selectByUserID" resultType="com.hinsliu.monki.domain.model.ClickActionDO">
-    select mid from t_click_action where uid = #{id,jdbcType=BIGINT} order by time desc limit 0,10
+    select <include refid="Base_Column_List" />
+    from t_click_action
+    where uid = #{id,jdbcType=BIGINT}
+    order by time desc limit 0,10
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from t_click_action
