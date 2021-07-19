@@ -2,6 +2,8 @@ package com.hinsliu.monki.dal;
 
 import com.hinsliu.monki.domain.model.UserDO;
 
+import java.util.List;
+
 public interface UserDao {
     int deleteByPrimaryKey(Long id);
 
@@ -16,4 +18,6 @@ public interface UserDao {
     int updateByPrimaryKey(UserDO record);
 
     UserDO selectByEmail(String email);
+
+    List<UserDO> selectAllUser();
 }

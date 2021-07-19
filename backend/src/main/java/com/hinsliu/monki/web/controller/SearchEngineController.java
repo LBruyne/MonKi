@@ -1,6 +1,7 @@
 package com.hinsliu.monki.web.controller;
 
 import com.hinsliu.monki.common.annotation.AuthToken;
+import com.hinsliu.monki.common.enums.SearchTypeEnum;
 import com.hinsliu.monki.domain.common.Page;
 import com.hinsliu.monki.domain.common.RpcResult;
 import com.hinsliu.monki.domain.query.RecommendQuery;
@@ -42,6 +43,9 @@ public class SearchEngineController {
     @RequestMapping(value = "/recommend", method = {RequestMethod.GET})
     public RpcResult<Page<MovieMetaDTO>> recommend(@ModelAttribute @Validated RecommendQuery query) {
         return RpcResult.successResult(searchEngineManager.recommend(query));
+//        SearchQuery query1 = new SearchQuery();
+//        query1.setKeyword("Avenger");
+//        return RpcResult.successResult(searchEngineManager.search(query1));
     }
 
 }

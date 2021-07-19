@@ -1,6 +1,9 @@
 package com.hinsliu.monki.dal;
 
 import com.hinsliu.monki.domain.model.ClickActionDO;
+import scala.Int;
+
+import java.util.List;
 
 public interface ClickActionDao {
     int deleteByPrimaryKey(Long id);
@@ -14,4 +17,8 @@ public interface ClickActionDao {
     int updateByPrimaryKeySelective(ClickActionDO record);
 
     int updateByPrimaryKey(ClickActionDO record);
+
+    List<ClickActionDO> selectByUserID(Long id);
+
+    List<ClickActionDO> selectRecentlyRecord(Integer record);
 }

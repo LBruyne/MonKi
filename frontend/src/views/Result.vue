@@ -4,18 +4,21 @@
     marginBottom: '10px',
     marginLeft:'92%',
     marginTop:'550px'}">
-        <a-icon type="caret-right" :style="{ fontSize: '40px', color: '#ffffff' , marginRight: '50px' ,position:absolute }"/>
+        <a-icon type="caret-right" :style="{ fontSize: '40px', color: '#ffffff' , marginLeft: '50px' ,position:'absolute' }" @click="next()"/>
     </div>
+
     <div class="content">
     <div class="moviename">
-          Call me by your name
+          {{this.moviename}}
     </div>
+
     <div class="search">
       <a-input-search class="input-box" placeholder="Please Input Search Text" style="width: 360px" @search="onSearch" size="small"/>
     </div>
     <div id="div2"><a href="https://movie.douban.com/" style="color: white">Movie |</a></div>
     <div id="div3"><a href="https://map.baidu.com/" style="color: white">Location</a></div>
     <div id="div4"><a href="https://music.163.com/" style="color: white">Music</a></div>
+
     <a-icon
       type="user"
       size="large"
@@ -117,11 +120,13 @@
       <div class="card">
       <div class="text-box">
           <br/>
-          <div class="Movietime">Time:</div>
-          <div class="Movielocation">Location:</div>
-          <div class="Movietype">Type:</div>
-          <div class="Movielanguage">Language:</div>
-          <div class="Moviedirector">Director:</div>
+          <div class="Movietime">
+          {{'Time:'+this.movieyear}}
+          </div>
+          <div class="Movielocation">{{'Location:'+this.movieylocation}}</div>
+          <div class="Movietype">{{'Type:'+this.movietype}}</div>
+          <div class="Movielanguage">{{'Rate:'+this.movierate}}</div>
+          <div class="Moviedirector">{{'Director:'+this.moviedirector}}</div>
 </div>
     </div>
     </div>
@@ -137,9 +142,10 @@
       <div class="wrapper">
         <div class="mouse-wheel-wrapper" ref="scroll1">
           <div class="mouse-wheel-content">
-            <div class="mouse-wheel-item" v-for="n in 50" :key="n">
-             <a style="color: white" href="https://music.163.com/#/search/m/?s=%E4%B8%A4%E5%8F%AA%E8%80%81%E8%99%8E&type=1">
-             两只老虎-群星
+            <div class="mouse-wheel-item" v-for="(item,n) in this.musiclist" :key="n">
+             <a style="color: white" :href="'https://music.163.com/#/search/m/?s='+item.name +'&type=1'">
+             {{item.name}}<br/>
+             <div v-for="i in 1" :key="i">{{item.composer[i]}}</div>
              </a>
              <a-icon type="link" :style="{ fontSize: '20px', color: '#ffffff' , marginRight: '50px' ,float:'right' }"/>
             </div>
@@ -149,7 +155,7 @@
 
       <div class="poster">
         <div class="main-circle">
-            <div class="circle">
+            <div :style="getbackground1()">
                 <div class="circle-heart"></div>
             </div>
         </div>        
@@ -164,118 +170,7 @@
         <div class="mouse-wheel-wrapper" ref="scroll2">
           <div class="mouse-wheel-content">
             <div class="mouse-wheel-item1">
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-                            dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
-              dhaksjhdkahsdkjashdkjasjdgfkjasdgfjasjdfgkjasdfkasdf
+              {{this.introduction}}
             </div>
             <div :style="{backgroundColor:'#000000',height:'1px'}"></div>
           </div>
@@ -285,7 +180,10 @@
       <div class="wrapper1">
         <div class="mouse-wheel-wrapper" ref="scroll3">
           <div class="mouse-wheel-content">
-            <div class="mouse-wheel-item2" v-for="n in 50" :key="n">
+            <div class="mouse-wheel-item2" v-for="(item,n) in this.imagelist" :key="n">
+              <img :src="getimage(n)" :style="{width: '100%',
+    height: '100%',
+    objectFit:'cover'}">
             </div>
           </div>
         </div>
@@ -310,6 +208,8 @@ export default {
       issend: true,
       text:this.$store.state.search.search,
       isLogin: this.$store.state.user.email,
+      relevant:this.$store.state.search.relevant,
+      current:this.$store.state.search.current,
       form: this.$form.createForm(this),
       data:[],
       loading: false,
@@ -317,6 +217,42 @@ export default {
       visible: false,
       count: 60,
       priority:0,
+      musiclist:[],
+      introduction:'',
+      imagelist:[],
+      moviename:'',
+      movietime:'',
+      moviedirector:[],
+      movieyear:'',
+      movierate:'',
+      movietype:[],
+      movieylocation:[],
+      moviepost:'',
+      movie1:{
+        backgroundImage: 'url('+ this.moviepost +')',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+        minWidth: '100%',
+        minHeight: '600px',
+        width: 'auto',
+        backgroundPosition: 'center center',
+        height: 'auto',
+        boxShadow: 'rgba(0, 0, 0, 0.4) 0px 30px 90px'
+      },
+      circle:{
+        width: '400px',
+        height: '400px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: '0 auto',
+        borderRadius: '100%',
+        backgroundColor: 'red',
+        /*看不出旋转效果，所以使用图片*/
+        backgroundImage: 'url(' + this.moviepost+')',
+        backgroundSize: 'cover'
+      },
+      backgroundurl:''
     };
   },
   name: "Result",
@@ -332,6 +268,13 @@ export default {
         this.bs3 = new BScroll(this.$refs.scroll3, {
           mouseWheel: true
         })
+      },
+      getbackground1:function(){
+        this.circle.backgroundImage = 'url(' + this.backgroundurl + ')';
+        return this.circle;
+      },
+      getimage(num){
+        return this.imagelist[num];
       },
       sendcode() {
         const TIME_COUNT = 60
@@ -367,7 +310,7 @@ export default {
         });
       },
 
-checkEmail (rule, value, callback) {
+    checkEmail (rule, value, callback) {
       const regex = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/
       if (!regex.test(value)) {
         callback('Please Enter the Valid Email!')
@@ -409,7 +352,9 @@ checkEmail (rule, value, callback) {
         }
       })
     },
+      onSearch(){
 
+      },
       showLogin() {
       this.visible_login = true;
       },
@@ -423,10 +368,56 @@ checkEmail (rule, value, callback) {
       },
       logoutNo(){
         this.visible_logout = false
+      },
+      next(){
+        if(parseInt(this.current)<this.relevant.length-1)
+          this.$store.commit('setCurrent',parseInt(this.current)+1)
+        else
+          this.$store.commit('setCurrent',parseInt(this.current)-this.relevant.length + 1)
+        console.log("hhh");
+        location.reload()
+      },
+      getMessage(){
+        this.axios.get('/api/app/movie/get',{
+        headers:{
+          'Authorization':this.$store.state.user.id
+        },
+        params:{
+          'id':this.relevant[this.current]
+        }
+      }).then((res)=>{
+        if(res.data.success == true){
+          this.introduction = res.data.data.location.introduction;
+          this.imagelist = res.data.data.location.images;
+          this.musiclist = res.data.data.music;
+          this.moviename = res.data.data.name;
+          this.movieyear = res.data.data.year;
+          this.movietype = res.data.data.genre;
+          this.movieylocation = res.data.data.location.visit;
+          this.movierate = res.data.data.rating;
+          this.circle.backgroundImage = res.data.data.post;
+          this.movie1.backgroundImage = res.data.data.post;
+          this.backgroundurl = res.data.data.post;
+          this.moviepost = res.data.data.post;
+          console.log(res.data.data.post);
+          this.moviedirector = res.data.data.director;
+        }
+        else{
+          window.alert(res.data.message)
+        }
+      }).catch(function (error) {
+            console.log(error)
+        })
       }
   },
   mounted(){
     this.init();
+    
+    this.getMessage();
+    console.log(localStorage.getItem("current"))
+    console.log(this.relevant)
+    console.log(this.current)
+    console.log(this.relevant[this.current])
   }
 };
 </script>
@@ -447,7 +438,7 @@ checkEmail (rule, value, callback) {
   height: auto;
 }
 .content{
-  background-image: url("../assets/back6.jpg");
+  background-color: #000;
   background-repeat: no-repeat;
   background-size: cover;
   min-width: 100%;
@@ -485,11 +476,11 @@ checkEmail (rule, value, callback) {
     vertical-align: top;
     word-spacing:0;
     float: right;
-    margin-right: 3.5%;
-    margin-top: -13%;
+    margin-right: 10%;
+    margin-top: -20%;
     top: 0;
     width: 39%;
-    height: 260px;
+    height: auto;
     line-height: 20px;
     opacity: 0.5;
     border-radius: 20px;
@@ -505,26 +496,25 @@ checkEmail (rule, value, callback) {
     margin-left: 4%;
     vertical-align: top;
     margin-top: 40px;
-    height: 307px;
+    height: auto;
     margin-top: 0px;
     display: inline-block;
     text-align: left;
 }
 
 .card .text-box .Movietype{
+    margin-top: 30px;
+    top: 600px;
     left: 411px;
-    top: 260px;
     width: 186px;
-    height: 50px;
     color: rgba(255, 255, 255, 100);
     font-size: 28px;
     text-align: left;
+    line-height: 150%;
 }
 .card .text-box .Movietime{
     left: 411px;
-    top: 213px;
     width: 234px;
-    height: 50px;
     color: rgba(255, 255, 255, 100);
     font-size: 28px;
     text-align: left;
@@ -532,32 +522,32 @@ checkEmail (rule, value, callback) {
 
 .card .text-box .Movielocation{
     left: 411px;
-    top: 308px;
+    margin-top:40px;
     width: 409px;
-    height: 50px;
     color: rgba(255, 255, 255, 100);
     font-size: 28px;
     text-align: left;
+    line-height: 150%;
 }
 
 .card .text-box .Movielanguage{
     left: 411px;
-    top: 308px;
     width: 409px;
     height: 50px;
     color: rgba(255, 255, 255, 100);
     font-size: 28px;
     text-align: left;
+    margin-top: 40px;
 }
 
 .card .text-box .Moviedirector{
     left: 411px;
-    top: 404px;
-    width: 175px;
+    width: 409px;
     height: 50px;
     color: rgba(255, 255, 255, 100);
     font-size: 28px;
     text-align: left;
+    line-height: 150%;
 }
 
 .wrapper{
@@ -600,10 +590,6 @@ box-shadow: 0px 5px 10px 3px rgba(255, 255, 255, 0.3);
   margin-bottom: 10%;
   border-radius: 6px;
   opacity: 0.5;
-  background-image: url('../assets/back3.jpg');
-  background-size:cover;
-  background-position: center center;
-  background-repeat: no-repeat;
   box-shadow: 0px 2px 0px 0px rgba(255, 255, 255, 0.3);
 }
 
@@ -616,7 +602,7 @@ box-shadow: 0px 5px 10px 3px rgba(255, 255, 255, 0.3);
 }
 
 .mouse-wheel-item{
-  height:70px;
+  height:90px;
   color: aliceblue;
   width: 500px;
   font-size:16px;

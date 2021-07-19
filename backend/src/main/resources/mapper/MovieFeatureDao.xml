@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hinsliu.monki.dal.MovieFeatureDao">
+  <resultMap id="BaseResultMap" type="com.hinsliu.monki.domain.model.MovieFeatureDO">
+    <id column="sid" jdbcType="INTEGER" property="sid" />
+    <result column="mongoID" jdbcType="VARCHAR" property="mongoid" />
+    <result column="feature" jdbcType="VARCHAR" property="feature" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    sid, mongoID, feature
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_movie_feature
+    where sid = #{sid,jdbcType=INTEGER}
+  </select>
+    <select id="selectAll" resultType="com.hinsliu.monki.domain.model.MovieFeatureDO">
+      select
+      sid, mongoID
+      from t_movie_feature
+      order by sid asc
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_movie_feature
+    where sid = #{sid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="sid" keyProperty="sid" parameterType="com.hinsliu.monki.domain.model.MovieFeatureDO" useGeneratedKeys="true">
+    insert into t_movie_feature (mongoID, feature)
+    values (#{mongoid,jdbcType=VARCHAR}, #{feature,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="sid" keyProperty="sid" parameterType="com.hinsliu.monki.domain.model.MovieFeatureDO" useGeneratedKeys="true">
+    insert into t_movie_feature
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="mongoid != null">
+        mongoID,
+      </if>
+      <if test="feature != null">
+        feature,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="mongoid != null">
+        #{mongoid,jdbcType=VARCHAR},
+      </if>
+      <if test="feature != null">
+        #{feature,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hinsliu.monki.domain.model.MovieFeatureDO">
+    update t_movie_feature
+    <set>
+      <if test="mongoid != null">
+        mongoID = #{mongoid,jdbcType=VARCHAR},
+      </if>
+      <if test="feature != null">
+        feature = #{feature,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where sid = #{sid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hinsliu.monki.domain.model.MovieFeatureDO">
+    update t_movie_feature
+    set mongoID = #{mongoid,jdbcType=VARCHAR},
+      feature = #{feature,jdbcType=VARCHAR}
+    where sid = #{sid,jdbcType=INTEGER}
+  </update>
+</mapper>

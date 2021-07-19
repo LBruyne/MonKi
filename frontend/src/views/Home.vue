@@ -7,8 +7,6 @@
       <div id="div3"><a href="https://map.baidu.com/" style="color: white">Location</a></div>
       <div id="div4"><a href="https://music.163.com/" style="color: white">Music</a></div>
       <div id="div5">More</div>
-      <div id="div6"><a href="#/search" >search</a></div>
-      <div id="div7"><a href="#/result" >result</a></div>
                   <a-icon
               type="user"
               size="large"
@@ -105,10 +103,6 @@
       </a-modal>
       </div>
     </div>
-
-
-
-
     <div class="search">
       <div class="searchtext">
       <a-icon :type="this.buttontype" @click="stopvideo"/>Search</div>
@@ -122,7 +116,7 @@
     <div class="wrapper">
     <div class="mouse-wheel-wrapper" ref="scroll">
       <div class="mouse-wheel-content">
-        <div class="mouse-wheel-item" v-for="(item, i) in test" :key=i :style="Getmoviestyle(item, i)" @click="clickTop(item.id)">
+        <div class="mouse-wheel-item" v-for="(item, i) in test" :key=i :style="Getmoviestyle(item, i)" @click="clickTop(item.id, i)">
         <div class="Moviename">
           {{item.name}}
         </div>
@@ -381,7 +375,7 @@ export default {
       // TODO: 获取热搜榜的接口的测试
       this.axios.get('/api/app/engine/recommend',{
         headers:{
-          'token':this.$store.state.user.id
+          'Authorization':this.$store.state.user.id
         },
         params:{
           'page':1,
@@ -392,6 +386,11 @@ export default {
         console.log(res.data)
         if(res.data.success == true){
           this.test = res.data.data.results
+          var relevant = []
+          for(let i = 0;i<res.data.data.results.length;i++){
+            relevant.push(res.data.data.results[i].id)
+          }
+          this.$store.commit('setRelevant',relevant)
         }
         else{
           window.alert(res.data.message)
@@ -401,16 +400,20 @@ export default {
             console.log(error)
         })
     },
-    clickTop(id)
+    clickTop(id, i)
     {
+      this.$store.commit('setCurrent',i)
       this.$store.commit('setMovieId',id)
       this.$router.push('/result')
-    }
+      console.log(this.$store.state.search.current)
+    },
   },
   mounted(){
     this.init();
     console.log(this.movie)
     this.getTop()
+    console.log(this.test)
+    console.log(this.movie)
   }
 };
 </script>
@@ -468,7 +471,7 @@ video{
 .wrapper{
   width: 1000px;
   height: 220px;
-  margin-top: 8%;
+  margin-top: 7%;
   margin-left: 10%;
 }
 
@@ -487,12 +490,15 @@ filter: brightness(2.3);
     white-space:nowrap;
     border-radius:5px;
     overflow:hidden;
+    height: 80%;
 }  
 
 .Moviename{
     color:aliceblue;
     margin-top: 55%;
     margin-bottom: -3px;
+    overflow:hidden;
+    white-space:nowrap;
 }
 
 .nextbutton{

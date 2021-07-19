@@ -2,17 +2,21 @@ package com.hinsliu.monki.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hinsliu.monki.common.UtilConstant;
 import com.hinsliu.monki.common.enums.ErrorCodeEnum;
 import com.hinsliu.monki.common.enums.SearchTypeEnum;
 import com.hinsliu.monki.common.exception.BusinessException;
+import com.hinsliu.monki.common.utils.copy.CopyUtils;
+import com.hinsliu.monki.common.utils.es.ESUtils;
 import com.hinsliu.monki.common.utils.time.DateTimeUtil;
-import com.hinsliu.monki.dal.SearchActionDao;
+import com.hinsliu.monki.dal.*;
 import com.hinsliu.monki.domain.common.Page;
 import com.hinsliu.monki.domain.common.PageParam;
-import com.hinsliu.monki.domain.model.SearchActionDO;
+import com.hinsliu.monki.domain.model.*;
 import com.hinsliu.monki.domain.query.RecommendQuery;
 import com.hinsliu.monki.domain.query.SearchQuery;
 import com.hinsliu.monki.domain.view.MovieMetaDTO;
+import io.swagger.models.auth.In;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigInteger;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -40,20 +44,6 @@ import java.util.stream.Collectors;
 @Service
 public class SearchEngineManager extends BaseManager {
 
-    private static final Double NAME_BOOST = 0.25;
-
-    private static final Double VISITS_BOOST = 0.25;
-
-    private static final Double MUSICS_BOOST = 0.25;
-
-    private static final Double SPECIFIED_BOOST = 1.0;
-
-    private static final Double RATING_FACTOR = 0.1;
-
-    private static final Double POPULARITY_FACTOR = 0.1;
-
-    private static final String POPULARITY_MODIFIER = "log1p";
-
     @Autowired
     private RestHighLevelClient highLevelClient;
 
@@ -63,9 +53,85 @@ public class SearchEngineManager extends BaseManager {
     @Resource
     private SearchActionDao searchActionDao;
 
-    private static final String METHOD = "GET";
+    @Resource
+    private MovieFeatureDao movieFeatureDao;
 
-    private static final String ENDPOINT = "/monki/_search";
+    @Resource
+    private ClickActionDao clickActionDao;
+
+    @Resource
+    private RecommendResultDao recommendResultDao;
+
+    @Resource
+    private UserDao userDao;
+
+    @Resource
+    private RecommendDao recommendDao;
+
+    public Page<MovieMetaDTO> recommend(RecommendQuery query) {
+        List<MovieMetaDTO> result = new ArrayList<>();
+
+        // 分页验证
+        PageParam.verify(query);
+
+        // 如果没有登录，返回热搜结果
+        // 如果登录了，返回重排结果
+        if (getUserId() == null) {
+            result = getHotSearchList();
+        } else {
+            result = getRerankingList(getUserId());
+        }
+
+        return new Page<>(query.getPage(), query.getPageSize(), result.size(), result);
+    }
+
+    private List<MovieMetaDTO> getRerankingList(Long userId) {
+        List<RecommendResultDO> recommendResultDOList = recommendResultDao.selectByUserId(userId);
+
+        // 如果不存在该用户的重排记录，返回热搜
+        if (recommendResultDOList.size() == 0) {
+            return getHotSearchList();
+        } else {
+            List<String> ids = recommendResultDOList.stream().map(RecommendResultDO::getTo).collect(Collectors.toList());
+            return searchMongo(ids);
+        }
+    }
+
+    private List<MovieMetaDTO> getHotSearchList() {
+        List<ClickActionDO> hotClickList = clickActionDao.selectRecentlyRecord(500);
+
+        // 统计每个电影被点击的数量
+        Map<String, Integer> movieClickMapper = new HashMap<>();
+        for (ClickActionDO clickAction : hotClickList) {
+            if (movieClickMapper.containsKey(clickAction.getMid())) {
+                movieClickMapper.replace(clickAction.getMid(), movieClickMapper.get(clickAction.getMid()) + 1);
+            } else {
+                movieClickMapper.put(clickAction.getMid(), 1);
+            }
+        }
+        // 按照被点击的数量排序
+        Map<String, Integer> sortedMapper = new HashMap<>();
+        movieClickMapper.entrySet().stream()
+                .sorted((p1, p2) -> p2.getValue().compareTo(p1.getValue()))
+                .collect(Collectors.toList())
+                .forEach(elem -> sortedMapper.put(elem.getKey(), elem.getValue()));
+
+        List<String> ids = new ArrayList<>(sortedMapper.keySet());
+        log.info("获取热搜电影列表:{}", ids);
+
+        // 如果数量较少，还需要随即进行补充
+        Random random = new Random();
+        List<MovieFeatureDO> movies = movieFeatureDao.selectAll();
+        while (ids.size() < UtilConstant.DEFAULT_PAGE_SIZE) {
+            String next = movies.get(random.nextInt()).getMongoid();
+            if (!ids.contains(next)) {
+                log.info("电影数量较少，随机获取热搜电影{}", next);
+                ids.add(next);
+            }
+        }
+
+        return searchMongo(ids.subList(0, UtilConstant.DEFAULT_PAGE_SIZE));
+    }
 
     public Page<MovieMetaDTO> search(SearchQuery query) {
         // 分页验证
@@ -107,18 +173,12 @@ public class SearchEngineManager extends BaseManager {
         }
     }
 
-    public Page<MovieMetaDTO> recommend(RecommendQuery query) {
-        // 分页验证
-        PageParam.verify(query);
-        return null;
-    }
-
     public SearchResult searchES(String kw, SearchTypeEnum type, Integer from, Integer size) {
         List<String> results = new ArrayList<>();
         Integer count = 0;
 
         // 构建请求体
-        Request request = new Request(METHOD, ENDPOINT);
+        Request request = new Request(ESUtils.METHOD, ESUtils.ENDPOINT);
         JSONObject body = new JSONObject();
 
         // 加入查询部分
@@ -146,8 +206,8 @@ public class SearchEngineManager extends BaseManager {
             count = jsonObject.getJSONObject("hits").getJSONObject("total").getInteger("value");
 
         } catch (IOException e) {
-            log.warn("发送ES查找请求失败");
             log.warn(e.getMessage(), e);
+            throw new BusinessException(ErrorCodeEnum.FAIL.getCode(), "发送ES查找请求失败");
         }
 
         return SearchResult.builder()
@@ -157,15 +217,15 @@ public class SearchEngineManager extends BaseManager {
     }
 
     private void addRequestBody(JSONObject body, String kw, SearchTypeEnum type, Integer from, Integer size) {
-        Double nameBst = NAME_BOOST, visitBst = VISITS_BOOST, musicBst = MUSICS_BOOST;
+        Double nameBst = ESUtils.NAME_BOOST, visitBst = ESUtils.VISITS_BOOST, musicBst = ESUtils.MUSICS_BOOST;
 
         // 获取加权
         if (type == SearchTypeEnum.MOVIE) {
-            nameBst = SPECIFIED_BOOST;
+            nameBst = ESUtils.SPECIFIED_BOOST;
         } else if (type == SearchTypeEnum.LOCATION) {
-            visitBst = SPECIFIED_BOOST;
+            visitBst = ESUtils.SPECIFIED_BOOST;
         } else if (type == SearchTypeEnum.MUSIC) {
-            musicBst = SPECIFIED_BOOST;
+            musicBst = ESUtils.SPECIFIED_BOOST;
         }
 
         // source
@@ -189,8 +249,8 @@ public class SearchEngineManager extends BaseManager {
         body.getJSONObject("query").getJSONObject("function_score").getJSONObject("query").getJSONObject("bool").getJSONArray("should").fluentAdd(name).fluentAdd(visits).fluentAdd(musics);
 
         body.getJSONObject("query").getJSONObject("function_score").put("functions", new JSONArray());
-        JSONObject rating = new JSONObject().fluentPut("field_value_factor", new JSONObject().fluentPut("field", "rating").fluentPut("factor", RATING_FACTOR));
-        JSONObject popularity = new JSONObject().fluentPut("field_value_factor", new JSONObject().fluentPut("field", "popularity").fluentPut("factor", POPULARITY_FACTOR).fluentPut("modifier", POPULARITY_MODIFIER));
+        JSONObject rating = new JSONObject().fluentPut("field_value_factor", new JSONObject().fluentPut("field", "rating").fluentPut("factor", ESUtils.RATING_FACTOR));
+        JSONObject popularity = new JSONObject().fluentPut("field_value_factor", new JSONObject().fluentPut("field", "popularity").fluentPut("factor", ESUtils.POPULARITY_FACTOR).fluentPut("modifier", ESUtils.POPULARITY_MODIFIER));
         body.getJSONObject("query").getJSONObject("function_score").getJSONArray("functions").fluentAdd(rating).fluentAdd(popularity);
 
         body.getJSONObject("query").getJSONObject("function_score").put("score_mode", "sum");
@@ -216,6 +276,57 @@ public class SearchEngineManager extends BaseManager {
 
         private Integer count;
 
+    }
+
+    public void recall() {
+        // 清空召回数据库
+        if(recommendDao.deleteAll() == 0) {
+            log.info("成功清除召回数据库");
+        } else {
+            log.warn("召回数据库为空或清楚失败");
+        }
+
+//        for eachUser:
+//             基于近10次点击记录，每次取前3  =》   《=30条
+//             基于近10次搜索记录，每次取前2  =》  《=20条
+//             去重复
+//             random补至50条
+//         存到数据库里去
+        List<UserDO> userls = userDao.selectAllUser();
+        List<MovieFeatureDO> movieID = movieFeatureDao.selectAll();
+        int len = movieID.size();
+        for (UserDO user : userls) {
+//            查找近10次点击记录
+            List<ClickActionDO> latest10Clicks = clickActionDao.selectByUserID(user.getId());
+
+//            查找最近10次搜索记录
+            List<SearchActionDO> latest10searches = searchActionDao.selectByUserID(user.getId());
+
+            Set<String> recall = new HashSet<>(100);
+
+            latest10Clicks.forEach(keywordToSearch -> recall.addAll(searchES(keywordToSearch.getName(), SearchTypeEnum.MOVIE, 0, 3).getResults()));
+
+            latest10searches.forEach(keywordToSearch -> recall.addAll(searchES(keywordToSearch.getContent(), SearchTypeEnum.getType(keywordToSearch.getType()), 0, 2).getResults()));
+
+            Random generator = new Random();
+//            id 的base
+            while (recall.size() < 50) {
+                int ofs = generator.nextInt(len);
+                recall.add(movieID.get(ofs).getMongoid());
+            }
+
+            RecommendDO recomm = new RecommendDO();
+            recomm.setUid(user.getId());
+            recomm.setMovies(String.join(";", recall));
+
+            int affectCount = recommendDao.insert(recomm);
+            if (affectCount > 0) {
+                log.info("召回算法结束，为用户id{}进行召回，插入{}个推荐", user.getId(), recall.size());
+            } else {
+                log.warn("召回算法结束，为用户id{}进行召回，插入记录失败", user.getId());
+                throw new BusinessException(ErrorCodeEnum.FAIL.getCode(), "插入用户召回失败");
+            }
+        }
     }
 
 }

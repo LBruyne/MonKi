@@ -59,14 +59,14 @@ public class Interceptor implements HandlerInterceptor {
             // 验证Token
             RedisUtil redis = RedisUtil.getInstance();
             if (token != null && token.length() != 0) {
-                String userId = redis.get(token);
+                String email = redis.get(token);
                 // 如果Token存在于Redis中，更新Token的存在寿命，将该用户的信息保存到ThreadLocal中
-                if (userId != null && !userId.equals("")) {
+                if (email != null && !email.equals("")) {
                     // 更新Token
-                    redis.set(token, userId);
+                    redis.set(token, email);
 
                     // 保存该用户信息到ThreadLocal中
-                    UserDO userDO = userDao.selectByPrimaryKey(Long.parseLong(userId));
+                    UserDO userDO = userDao.selectByEmail(email);
                     if (userDO == null || userDO.getId() == null) {
                         throw new BusinessException(ErrorCodeEnum.FAIL.getCode(), "用户ID在数据库中不存在");
                     } else {
