@@ -13,7 +13,7 @@
     </div>
 
     <div class="search">
-      <a-input-search class="input-box" placeholder="Please Input Search Text" style="width: 360px" @search="onSearch" size="small"/>
+      <a-input-search v-model="text" class="input-box" placeholder="Please Input Search Text" style="width: 360px" @search="onSearch" size="small"/>
     </div>
     <div id="div2"><a href="https://movie.douban.com/" style="color: white">Movie |</a></div>
     <div id="div3"><a href="https://map.baidu.com/" style="color: white">Location</a></div>
@@ -173,10 +173,12 @@
       <div class="wrapper">
         <div class="mouse-wheel-wrapper" ref="scroll2">
           <div class="mouse-wheel-content">
+          <div :style="{backgroundColor:'#000000',height:'100px'}"></div>
             <div class="mouse-wheel-item1">
               {{this.introduction}}
+              <div :style="{backgroundColor:'#000000',height:'50px'}"></div>
             </div>
-            <div :style="{backgroundColor:'#000000',height:'1px'}"></div>
+            <div :style="{backgroundColor:'#000000',height:'50px'}"></div>
           </div>
         </div>
       </div>
@@ -357,7 +359,10 @@ export default {
       })
     },
       onSearch(){
-
+        this.$store.commit('setSearch',this.text)
+        console.log(this.text)
+        console.log(this.$store.state.search.search)
+        this.$router.push('/search')  
       },
       showLogin() {
       this.visible_login = true;
@@ -398,6 +403,7 @@ export default {
           this.movieyear = res.data.data.year;
           this.movietype = res.data.data.genre;
           this.movieylocation = res.data.data.location.visit;
+          this.movieylocation = this.movieylocation.slice(0,2);
           this.movierate = res.data.data.rating;
           this.circle.backgroundImage = res.data.data.post;
           this.movie1.backgroundImage = res.data.data.post;
@@ -415,13 +421,21 @@ export default {
       }
   },
   mounted(){
-    this.init();
     
     this.getMessage();
     console.log(localStorage.getItem("current"))
     console.log(this.relevant)
     console.log(this.current)
     console.log(this.relevant[this.current])
+  },
+  created(){
+  },
+  watch:{
+    musiclist:function(){
+      this.$nextTick(function(){
+        this.init();
+      })
+    }
   }
 };
 </script>
@@ -463,7 +477,7 @@ export default {
   font-size: 100px;
   font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   color:aliceblue;
-  padding-left: 2%;
+  padding-left: 8%;
   display: inline-block;
   width: 33%;
 }
@@ -539,6 +553,7 @@ export default {
     font-size: 28px;
     text-align: left;
     line-height: 150%;
+    overflow: hidden;
 }
 
 .card .text-box .Movielanguage{
@@ -562,7 +577,7 @@ export default {
 }
 
 .wrapper{
-  width: 50%;
+  width:50%;
   height: 400px;
   margin-top: 2%;
   margin-left: 2%;

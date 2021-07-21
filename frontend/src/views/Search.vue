@@ -518,7 +518,7 @@ export default {
   position: relative;
   top: 0;
   left: 0;
-  background: url("../assets/Movieback.jpg") no-repeat fixed;
+  background-color:black;
   background-size: cover;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -536,7 +536,7 @@ export default {
   top: 0;
   background: inherit;
   filter: blur(5px);
-  background-color: rgba(141, 141, 141, 0.5);
+  background-color: rgba(141, 141, 141, 0.1);
   background-blend-mode: darken;
   z-index: -100;
 }
