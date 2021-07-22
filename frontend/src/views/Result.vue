@@ -13,7 +13,7 @@
     </div>
 
     <div class="search">
-      <a-input-search class="input-box" placeholder="Please Input Search Text" style="width: 360px" @search="onSearch" size="small"/>
+      <a-input-search v-model="text" class="input-box" placeholder="Please Input Search Text" style="width: 360px" @search="onSearch" size="small"/>
     </div>
     <div id="div2"><a href="https://movie.douban.com/" style="color: white">Movie |</a></div>
     <div id="div3"><a href="https://map.baidu.com/" style="color: white">Location</a></div>
@@ -161,18 +161,24 @@
         </div>        
       </div>
     </div>
+  </div>
 
-      <div class="Movietext" :style="{ width: '10%', float:'right', marginTop:'10%', fontSize:'30px',color:'#ffffff'}" >
+  <div class="textcontent">
+      <div class="Movietext" :style="{marginBottom:'10%',position:'absolute',left:'46%',fontSize:'30px',color:'#ffffff'}" >
         Location
+      </div>
+      <div class="Movietext" :style="{height:'70px',position:'absolute',left:'50%',fontSize:'30px',color:'#ffffff'}" >
       </div>
       <div class="picture">
       <div class="wrapper">
         <div class="mouse-wheel-wrapper" ref="scroll2">
           <div class="mouse-wheel-content">
+          <div :style="{backgroundColor:'#000000',height:'100px'}"></div>
             <div class="mouse-wheel-item1">
               {{this.introduction}}
+              <div :style="{backgroundColor:'#000000',height:'50px'}"></div>
             </div>
-            <div :style="{backgroundColor:'#000000',height:'1px'}"></div>
+            <div :style="{backgroundColor:'#000000',height:'50px'}"></div>
           </div>
         </div>
       </div>
@@ -353,7 +359,10 @@ export default {
       })
     },
       onSearch(){
-
+        this.$store.commit('setSearch',this.text)
+        console.log(this.text)
+        console.log(this.$store.state.search.search)
+        this.$router.push('/search')  
       },
       showLogin() {
       this.visible_login = true;
@@ -394,6 +403,7 @@ export default {
           this.movieyear = res.data.data.year;
           this.movietype = res.data.data.genre;
           this.movieylocation = res.data.data.location.visit;
+          this.movieylocation = this.movieylocation.slice(0,2);
           this.movierate = res.data.data.rating;
           this.circle.backgroundImage = res.data.data.post;
           this.movie1.backgroundImage = res.data.data.post;
@@ -411,13 +421,21 @@ export default {
       }
   },
   mounted(){
-    this.init();
     
     this.getMessage();
     console.log(localStorage.getItem("current"))
     console.log(this.relevant)
     console.log(this.current)
     console.log(this.relevant[this.current])
+  },
+  created(){
+  },
+  watch:{
+    musiclist:function(){
+      this.$nextTick(function(){
+        this.init();
+      })
+    }
   }
 };
 </script>
@@ -427,6 +445,12 @@ export default {
   min-width: 100%;
   background-color:black;
   filter:brightness(1);
+}
+.textcontent{
+  background-color: black;
+  margin-top: 5%;
+  height:auto;
+  width: 100%;
 }
 .article{
   background-color: black;
@@ -453,7 +477,7 @@ export default {
   font-size: 100px;
   font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   color:aliceblue;
-  padding-left: 2%;
+  padding-left: 8%;
   display: inline-block;
   width: 33%;
 }
@@ -474,10 +498,11 @@ export default {
 
 .card{
     vertical-align: top;
+    position: absolute;
     word-spacing:0;
     float: right;
-    margin-right: 10%;
-    margin-top: -20%;
+    margin-left: 50%;
+    margin-top: 10%;
     top: 0;
     width: 39%;
     height: auto;
@@ -528,6 +553,7 @@ export default {
     font-size: 28px;
     text-align: left;
     line-height: 150%;
+    overflow: hidden;
 }
 
 .card .text-box .Movielanguage{
@@ -551,7 +577,7 @@ export default {
 }
 
 .wrapper{
-  width: 50%;
+  width:50%;
   height: 400px;
   margin-top: 2%;
   margin-left: 2%;
@@ -560,9 +586,9 @@ export default {
 
 .wrapper1{
   width: 40%;
-  margin-top: 2%;
+  margin-top: 10%;
   height: 400px;
-  margin-right: 2%;
+  margin-left: 0%;
   display: inline-block;
 }
 
@@ -645,6 +671,7 @@ box-shadow: 0px 5px 10px 3px rgba(255, 255, 255, 0.3);
 } 
 
 .poster{
+  right:0%;
   height:800px;
   width: 650px;
   float: right;

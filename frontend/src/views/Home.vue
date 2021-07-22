@@ -3,10 +3,10 @@
     <video loop autoplay muted style="width:100%;" ref="video" :src="this.videoname">
     </video>
     <div class="loginbutton" style="margin-top:14.5px">
-      <div id="div2"><a href="https://movie.douban.com/" style="color: white">Movie</a></div>
+      <!-- <div id="div2"><a href="https://movie.douban.com/" style="color: white">Movie</a></div>
       <div id="div3"><a href="https://map.baidu.com/" style="color: white">Location</a></div>
       <div id="div4"><a href="https://music.163.com/" style="color: white">Music</a></div>
-      <div id="div5">More</div>
+      <div id="div5">More</div> -->
                   <a-icon
               type="user"
               size="large"
@@ -219,7 +219,7 @@ export default {
       number1:0,
       flagvideo: true,
       buttontype:'pause',
-      videoname:require('../assets/movie1.mp4'),
+      videoname:require('../assets/starwar.mp4'),
       videourl:[require('../assets/movie1.mp4'),require('../assets/girl.mp4'),require('../assets/video.mp4'),require('../assets/harry.mp4'),require('../assets/starwar.mp4')],
       backstyle:['home1','home2','home3','home4','home5','home6']
     };
